@@ -1,5 +1,5 @@
 # Ilgar
-Quick and simple migration for Fat-Free Framework.
+Quick and simple migration tool for Fat-Free Framework.
 
 
 ## Getting Started
