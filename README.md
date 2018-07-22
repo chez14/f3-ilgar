@@ -28,7 +28,7 @@ Quick and simple migration for Fat-Free Framework.
 4. Create your first ever migration packet
 
 
-3. Watch World Triggger.
+3. Watch [World Triggger](https://myanimelist.net/anime/24405/World_Trigger). 👍
 
 ## MigrationPacket Class Example
 **TBA**
