@@ -11,7 +11,7 @@ Quick and simple migration tool for Fat-Free Framework.
 2. Decide your bombarding option
         
     - Do it with default configuration?
-        - call `/migrate` to do migration
+        - call `/ilgar/migrate` to do migration
 
         - use `Migration` as your migration class namespace prefix
         
@@ -27,8 +27,16 @@ Quick and simple migration tool for Fat-Free Framework.
 
 4. Create your first ever migration packet
 
+5. Deploy migration by accessing `/ilgar/migrate`
+    ```bash
+    curl http://localhost:8087/ilgar/migrate
+    ```
 
-3. Watch [World Triggger](https://myanimelist.net/anime/24405/World_Trigger). 👍
+    or
+
+    ```bash
+    php index.php /ilgar/migrate
+    ```
 
 ## MigrationPacket Class Example
 **TBA**
