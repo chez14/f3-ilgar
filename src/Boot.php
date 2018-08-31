@@ -15,6 +15,6 @@ class Boot {
     }
 
     public static function trigger_on() {
-        $internal = \Chez14\Ilgar\Internal::instance()->do_migrate();
+        return \Chez14\Ilgar\Internal::instance()->do_migrate();
     }
 }

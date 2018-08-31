@@ -76,13 +76,20 @@ class Internal extends \Prefab {
         });
         $cls = null;
         $counter = 0;
+        $skipped = 0;
         $failed = null;
         try {
-            array_map(function($mig_point) use (&$current, &$cls, &$counter){
+            array_map(function($mig_point) use (&$current, &$cls, &$counter, &$skipped){
                 include($mig_point['path']);
                 //call the class:
                 $cls = new $mig_point['classname']();
-                if($cls->on_migrate() === false) {
+                
+                if(!$cls->is_migratable()) {
+                    $skipped[] = $cls;
+                    return;
+                }
+                
+                if($cls->pre_migrate() === false || $cls->on_migrate() === false || $cls->post_migrate() === false) {
                     throw new \Exception("Migration failed at file " . $mig_point['classname']);
                 }
                 $current = $mig_point['version'];
