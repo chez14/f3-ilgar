@@ -79,7 +79,7 @@ returns void.
 Will forcefully delete `migration.json` at designated path.
 
 ## License
-Yes, [MIT](LICENSE).
+Yes, [GPLv3](LICENSE).
 
 ## FAQ and RAQ (Rarely Asked Question)
 
