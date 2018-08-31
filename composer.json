@@ -2,7 +2,7 @@
     "name": "chez14/f3-ilgar",
     "description": "A simple migration tool for Fat-Free Framework",
     "type": "library",
-    "license": "MIT",
+    "license": "GPLv3",
     "homepage": "https://github.com/chez14/f3-ilgar",
     "keywords": [
         "migration", "migrate", "database", "ilgar", "fat-free framework", "f3", "world trigger", "bomber"
@@ -21,5 +21,12 @@
         "psr-4": {
             "Chez14\\Ilgar\\":"src/Ilgar/"
         }
+    },
+    "require-dev": {
+        "bcosca/fatfree-core": "^3.6",
+        "phpunit/phpunit": "^7.3"
+    },
+    "scripts": {
+        "test":"phpunit"
     }
 }

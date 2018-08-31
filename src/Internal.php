@@ -11,6 +11,9 @@ class Internal extends \Prefab {
     protected
         $setting;
 
+    protected
+        $stats = [];
+
     public function __construct() {
         $this->load_setting();
     }
@@ -27,16 +30,18 @@ class Internal extends \Prefab {
 
             "info" => dirname(__DIR__) . "/data/migration.json",
             "path" => "migration/",
-            "prefix" => "Migrate\\",
+            "prefix" => "Migration\\",
             "access_path" => "GET @ilgar: /ilgar/migrate"
 
         ], $setting);
+        $f3->set('ILGAR', $this->setting);
     }
 
     /**
      * Main lifecycle starter.
      */
-    protected function do_migrate() {
+    public function do_migrate() {
+        $this->load_setting();
         $path = $this->setting['path'];
         $points = array_splice(scandir($path), 2);
         natcasesort($points);
@@ -71,13 +76,13 @@ class Internal extends \Prefab {
         });
         $cls = null;
         $counter = 0;
-        $failed = false;
+        $failed = null;
         try {
             array_map(function($mig_point) use (&$current, &$cls, &$counter){
                 include($mig_point['path']);
                 //call the class:
                 $cls = new $mig_point['classname']();
-                if(!$cls->migrate()) {
+                if($cls->on_migrate() === false) {
                     throw new \Exception("Migration failed at file " . $mig_point['classname']);
                 }
                 $current = $mig_point['version'];
@@ -85,7 +90,7 @@ class Internal extends \Prefab {
             }, $points);
         } catch (\Exception $e) {
             $cls->on_failed($e);
-            $failed = $e->getMessage();
+            $failed = $e;
         }
         //saving migration point
         file_put_contents($migration_path, json_encode([
@@ -96,8 +101,20 @@ class Internal extends \Prefab {
         // pikirin lagi si lognya
         echo "Succesfully done $counter migration\n";
         if($failed) {
-            echo "But we encountered an exception: " . $failed . "\n\n";
+            echo "But we encountered an exception: " . $failed->getMessage() . "\n\n";
         }
+
+        $this->stats = [
+            "success" => $counter,
+            "last_exception" => $failed,
+            "version" => $current
+        ];
+
+        return $this->stats;
+    }
+
+    public function get_stats() {
+        return $this->stats;
     }
 
     /**
@@ -126,9 +143,10 @@ class Internal extends \Prefab {
      */
     public function reset_version() {
         $migration_path = $this->setting['info'];
-        if(file_exists($migration_path)) {
-            kill($migration_path);
+        if(\file_exists($migration_path)) {
+            \unlink($migration_path);
         }
+        $this->stats = [];
     }
 
 }
