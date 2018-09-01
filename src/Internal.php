@@ -38,7 +38,10 @@ class Internal extends \Prefab {
     }
 
     /**
-     * Main lifecycle starter.
+     * Triggers migration and much more.
+     * NOT RECOMENDED FOR PUBLIC USE. PLEASE USE Boot::trigger_on().
+     * 
+     * @return Array quick stats
      */
     public function do_migrate() {
         $this->load_setting();
@@ -76,7 +79,7 @@ class Internal extends \Prefab {
         });
         $cls = null;
         $counter = 0;
-        $skipped = 0;
+        $skipped = [];
         $failed = null;
         try {
             array_map(function($mig_point) use (&$current, &$cls, &$counter, &$skipped){
@@ -120,6 +123,11 @@ class Internal extends \Prefab {
         return $this->stats;
     }
 
+    /**
+     * Get last migration stats.
+     * 
+     * @return Array quick stats
+     */
     public function get_stats() {
         return $this->stats;
     }
@@ -147,6 +155,8 @@ class Internal extends \Prefab {
 
     /**
      * Destroy current migration info
+     * 
+     * @return void
      */
     public function reset_version() {
         $migration_path = $this->setting['info'];
