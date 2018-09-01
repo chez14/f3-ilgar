@@ -27,6 +27,6 @@
         "phpunit/phpunit": "^7.3"
     },
     "scripts": {
-        "test":"phpunit"
+        "test":"phpunit --testdox"
     }
 }

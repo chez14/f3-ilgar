@@ -1,6 +1,9 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @testdox Hard Failure (Failure that caused by exceptions)
+ */
 class HardFailTest extends TestCase
 {
     protected $f3;
@@ -12,6 +15,9 @@ class HardFailTest extends TestCase
         \Chez14\Ilgar\Boot::now();
     }
 
+    /**
+     * @testdox Able to handle the exception without throwing exception
+     */
     public function testFirstStage() {
         \Chez14\Ilgar\Internal::instance()->reset_version();
         $this->f3->mock('GET /ilgar/migrate');

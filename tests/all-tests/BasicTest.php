@@ -1,6 +1,9 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @testdox Basic Test
+ */
 class BasicTest extends TestCase
 {
     protected $f3;
@@ -12,6 +15,9 @@ class BasicTest extends TestCase
         \Chez14\Ilgar\Boot::now();
     }
 
+    /**
+     * @testdox Able to do simple migration
+     */
     public function testFirstStage() {
         \Chez14\Ilgar\Internal::instance()->reset_version();
         $this->f3->mock('GET /ilgar/migrate');
@@ -22,6 +28,7 @@ class BasicTest extends TestCase
     }
 
     /**
+     * @testdox Able to prevent reinvoking the same migration package
      * @depends testFirstStage
      */
     public function testSecondStage() {

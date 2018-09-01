@@ -1,6 +1,8 @@
 <?php
 use PHPUnit\Framework\TestCase;
-
+/**
+ * @testdox Soft Fail Test: failure because of false code from the do_migrate method.
+ */
 class SoftFailTest extends TestCase
 {
     protected $f3;
@@ -12,6 +14,9 @@ class SoftFailTest extends TestCase
         \Chez14\Ilgar\Boot::now();
     }
 
+    /**
+     * @testdox Able to handle soft fail
+     */
     public function testFirstStage() {
         \Chez14\Ilgar\Internal::instance()->reset_version();
         $this->f3->mock('GET /ilgar/migrate');

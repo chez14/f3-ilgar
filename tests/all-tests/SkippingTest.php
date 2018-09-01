@@ -1,6 +1,9 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @testdox is_migratable 
+ */
 class SkippingTest extends TestCase
 {
     protected $f3;
@@ -12,6 +15,9 @@ class SkippingTest extends TestCase
         \Chez14\Ilgar\Boot::now();
     }
 
+    /**
+     * @testdox Able to skip a migration package when is_migratable is false.
+     */
     public function testFirstStage() {
         \Chez14\Ilgar\Internal::instance()->reset_version();
         $this->f3->mock('GET /ilgar/migrate');
@@ -22,6 +28,7 @@ class SkippingTest extends TestCase
     }
 
     /**
+     * @testdox Able to skip a migration package even if it's haven't executed.
      * @depends testFirstStage
      */
     public function testSecondStage() {
