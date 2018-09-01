@@ -1,4 +1,4 @@
-# Ilgar
+# Ilgar [![Build Status](https://travis-ci.org/chez14/f3-ilgar.svg?branch=master)](https://travis-ci.org/chez14/f3-ilgar)
 Quick and simple migration tool for Fat-Free Framework.
 
 
