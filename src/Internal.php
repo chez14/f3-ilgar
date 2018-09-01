@@ -46,7 +46,8 @@ class Internal extends \Prefab {
     public function do_migrate() {
         $this->load_setting();
         $path = $this->setting['path'];
-        $points = array_splice(scandir($path), 2);
+        $migration_packages=scandir($path);
+        $points = array_splice($migration_packages, 2);
         natcasesort($points);
 
         $prefix = $this->setting['prefix'];
