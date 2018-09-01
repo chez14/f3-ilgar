@@ -6,6 +6,7 @@ php:
   - '7.2'
   - nightly
 before_script:
-  - composer install --dev
+  - composer remove phpunit/phpunit && require --dev phpunit/phpunit:^5 --update-with-dependencies
+  - composer install
 script:
   - composer run test
