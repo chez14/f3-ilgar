@@ -1,4 +1,7 @@
-# Ilgar [![Build Status](https://travis-ci.org/chez14/f3-ilgar.svg?branch=master)](https://travis-ci.org/chez14/f3-ilgar)
+# Ilgar 
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/chez14/f3-ilgar.svg?style=flat-square)](https://github.com/chez14/f3-ilgar)
+ [![Travis (.org)](https://img.shields.io/travis/chez14/f3-ilgar.svg?style=flat-square)](https://github.com/chez14/f3-ilgar) [![Packagist](https://img.shields.io/packagist/v/chez14/f3-ilgar.svg?style=flat-square)](https://packagist.org/packages/chez14/f3-ilgar) [![GitHub release](https://img.shields.io/github/release/chez14/f3-ilgar.svg?style=flat-square)](https://github.com/chez14/f3-ilgar)
+
 Quick and simple migration tool for Fat-Free Framework.
 
 
