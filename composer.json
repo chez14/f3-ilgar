@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Chez14\\Ilgar\\":"src/Ilgar/"
+            "Chez14\\Ilgar\\":"src/"
         }
     },
     "require-dev": {
