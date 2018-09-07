@@ -24,8 +24,7 @@
         "classmap":["src/"]
     },
     "require-dev": {
-        "bcosca/fatfree-core": "^3.6",
-        "phpunit/phpunit": "^5"
+        "bcosca/fatfree-core": "^3.6"
     },
     "scripts": {
         "test-dry" : "phpunit --testdox",
