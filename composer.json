@@ -17,7 +17,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.6"
+        "php": ">=5.6",
+        "monolog/monolog": "^1.23"
     },
     "autoload": {
         "classmap":["src/"]
@@ -27,6 +28,7 @@
         "phpunit/phpunit": "^5"
     },
     "scripts": {
-        "test":"phpunit --testdox"
+        "test-dry" : "phpunit --testdox",
+        "test":"composer require phpunit/phpunit && phpunit --testdox"
     }
 }

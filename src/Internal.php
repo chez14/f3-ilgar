@@ -1,5 +1,7 @@
 <?php
 Namespace Chez14\Ilgar;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 /**
  * Internal API
@@ -25,14 +27,20 @@ class Internal extends \Prefab {
         $f3 = \Base::instance();
         $setting = $f3->get('ILGAR');
 
+        $file = dirname(__DIR__) . "/data/log.log";
+        $logger = new Logger('migration');
+        $logger->pushHandler(new StreamHandler($file, Logger::INFO));
+        $logger->pushHandler(new StreamHandler($file, Logger::NOTICE));
+        $logger->pushHandler(new StreamHandler($file, Logger::WARNING));
+        $logger->pushHandler(new StreamHandler($file, Logger::CRITICAL));
         // Default setting
         $this->setting = array_merge([
-
             "info" => dirname(__DIR__) . "/data/migration.json",
             "path" => "migration/",
             "prefix" => "Migration\\",
-            "access_path" => "GET @ilgar: /ilgar/migrate"
-
+            "show-log" => true,
+            "access_path" => "GET @ilgar: /ilgar/migrate",
+            "logger" => $logger
         ], $setting);
         $f3->set('ILGAR', $this->setting);
     }
@@ -46,23 +54,42 @@ class Internal extends \Prefab {
     public function do_migrate() {
         $this->load_setting();
         $path = $this->setting['path'];
+        $log = $this->setting['logger'];
+
+        $log->notice("Migration Started");
+
         $migration_packages=scandir($path);
         $points = array_splice($migration_packages, 2);
         natcasesort($points);
 
         $prefix = $this->setting['prefix'];
 
-        $points = array_map(function($file) use ($path, $prefix){
+        $points = array_map(function($file) use ($path, $prefix, &$log){
             $fname = basename($file);
-            $components = [];
             
+            if(!is_file($path))
+                return null;
+
+            $components = [];
+
             preg_match("/([0-9]+)\-([\w\_]+).php/i", $fname, $components);
+
+            if(!$components || $components[1] || $components[2])
+                return null;
+
+            $log->info("Found " . $components[2] . " (v-" . intval($components[1]) . ")");
+
             return [
                 "version" => intval($components[1]),
                 "classname" => $prefix .$components[2],
                 "path" => $path . $file
             ];
         }, $points);
+
+        $points = array_filter($points, function($data){
+            return $data!=null;
+        });
+        $log->notice('Found ' . count($points) . " migrations.");
 
         $migration_path = $this->setting['info'];
         
@@ -74,35 +101,54 @@ class Internal extends \Prefab {
                 $current = $migrate['version'];
             }
         }
+
+        $log->notice("Info file loaded. Current migration version: " . $current);
         //filter the version here.
         $points = array_filter($points, function($data) use($current) {
             return ($data['version'] > $current);
         });
+
+        $log->notice('Aplicable migrations: ' . count($points));
         $cls = null;
         $counter = 0;
         $skipped = [];
         $failed = null;
         try {
-            array_map(function($mig_point) use (&$current, &$cls, &$counter, &$skipped){
+            array_map(function($mig_point) use (&$current, &$cls, &$counter, &$skipped, &$log){
                 include($mig_point['path']);
+
+                $log->info("Loading " . $mig_point['classname']);
                 //call the class:
                 $cls = new $mig_point['classname']();
-                
+
                 if(!$cls->is_migratable()) {
+                    $log->warning('Skipping ' . $mig_point['classname'] . ' as its marked itself not aplicable');
                     $skipped[] = $cls;
                     return;
                 }
                 
+                $log->notice("Applying migration...");
                 if($cls->pre_migrate() === false || $cls->on_migrate() === false || $cls->post_migrate() === false) {
+                    $log->notice('The migration returns a soft error.');
+                    $log->notice('Raising Exceptions.');
                     throw new \Exception("Migration failed at file " . $mig_point['classname']);
                 }
                 $current = $mig_point['version'];
                 $counter++;
             }, $points);
         } catch (\Exception $e) {
-            $cls->on_failed($e);
+            $log->critical('Exception: ' . $e->getMessage());
+            $log->notice('An exception has raised, aborting migration, and now doing soft undo...');
+            try {
+                $cls->on_failed($e);
+                $log->notice('Soft undo successfull');
+            } catch(\Exception $e) {
+                $log->critical("Undo failed. Please check: " . $e->getMessage());
+            }
             $failed = $e;
         }
+
+        $log->notice("Migration finished. Version updated to " . $current);
         //saving migration point
         file_put_contents($migration_path, json_encode([
             "version" => $current
@@ -110,9 +156,9 @@ class Internal extends \Prefab {
 
 
         // pikirin lagi si lognya
-        echo "Succesfully done $counter migration\n";
+        $log->info("Successfully done " . $counter . " migration(s).");
         if($failed) {
-            echo "But we encountered an exception: " . $failed->getMessage() . "\n\n";
+            $log->info("and encountered exception: " . $failed->getMessage());
         }
 
         $this->stats = [
