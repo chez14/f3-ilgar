@@ -29,20 +29,28 @@ class Internal extends \Prefab {
 
         $file = dirname(__DIR__) . "/data/log.log";
         $logger = new Logger('migration');
-        $logger->pushHandler(new StreamHandler($file, Logger::INFO));
-        $logger->pushHandler(new StreamHandler($file, Logger::NOTICE));
-        $logger->pushHandler(new StreamHandler($file, Logger::WARNING));
-        $logger->pushHandler(new StreamHandler($file, Logger::CRITICAL));
         // Default setting
         $this->setting = array_merge([
             "info" => dirname(__DIR__) . "/data/migration.json",
             "path" => "migration/",
             "prefix" => "Migration\\",
-            "show-log" => true,
+            "show-log" => false,
             "access_path" => "GET @ilgar: /ilgar/migrate",
             "logger" => $logger
         ], $setting);
         $f3->set('ILGAR', $this->setting);
+
+        if($this->setting['show-log']) {
+            $file = "php://stdout";
+            $logger->pushHandler(new StreamHandler("php://stdout", Logger::INFO));
+            $logger->pushHandler(new StreamHandler("php://stdout", Logger::NOTICE));
+            $logger->pushHandler(new StreamHandler("php://stdout", Logger::WARNING));
+            $logger->pushHandler(new StreamHandler("php://stdout", Logger::CRITICAL));
+        }
+        $logger->pushHandler(new StreamHandler($file, Logger::INFO));
+        $logger->pushHandler(new StreamHandler($file, Logger::NOTICE));
+        $logger->pushHandler(new StreamHandler($file, Logger::WARNING));
+        $logger->pushHandler(new StreamHandler($file, Logger::CRITICAL));
     }
 
     /**
@@ -66,16 +74,20 @@ class Internal extends \Prefab {
 
         $points = array_map(function($file) use ($path, $prefix, &$log){
             $fname = basename($file);
-            
-            if(!is_file($path))
+            $log->info('Proccessing ' . $file);
+            if(!is_file($path . $file)){
+                $log->info('Current file was not a file.');
                 return null;
+            }
 
             $components = [];
 
             preg_match("/([0-9]+)\-([\w\_]+).php/i", $fname, $components);
 
-            if(!$components || $components[1] || $components[2])
+            if(!$components || !$components[1] || !$components[2]){
+                $log->warning('The file name is in not a valid name convention. Skipping...');
                 return null;
+            }
 
             $log->info("Found " . $components[2] . " (v-" . intval($components[1]) . ")");
 
@@ -166,6 +178,10 @@ class Internal extends \Prefab {
             "last_exception" => $failed,
             "version" => $current
         ];
+
+        if($this->setting['show-log']) {
+
+        }
 
         return $this->stats;
     }

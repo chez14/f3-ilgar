@@ -1,3 +1,4 @@
 /vendor/
 /data/migration.json
+/data/log.log
 composer.lock
