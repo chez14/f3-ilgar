@@ -11,6 +11,7 @@ class SkippingTest extends TestCase
     protected function setUp() {
         $this->f3 = \F3::instance();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/packages-test-2/");
+        $this->f3->set('ILGAR.show-log', false);
         $this->f3->set('QUIET',TRUE);
         \Chez14\Ilgar\Boot::now();
     }
