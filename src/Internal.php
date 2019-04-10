@@ -34,23 +34,17 @@ class Internal extends \Prefab {
             "info" => dirname(__DIR__) . "/data/migration.json",
             "path" => "migration/",
             "prefix" => "Migration\\",
-            "show-log" => false,
+            "show-log" => true,
             "access_path" => "GET @ilgar: /ilgar/migrate",
             "logger" => $logger
         ], $setting);
         $f3->set('ILGAR', $this->setting);
 
         if($this->setting['show-log']) {
-            $file = "php://stdout";
-            $logger->pushHandler(new StreamHandler("php://stdout", Logger::INFO));
-            $logger->pushHandler(new StreamHandler("php://stdout", Logger::NOTICE));
-            $logger->pushHandler(new StreamHandler("php://stdout", Logger::WARNING));
-            $logger->pushHandler(new StreamHandler("php://stdout", Logger::CRITICAL));
-        }
+            header('Content-type: text/plain');
+            $file = "php://output";
+       }
         $logger->pushHandler(new StreamHandler($file, Logger::INFO));
-        $logger->pushHandler(new StreamHandler($file, Logger::NOTICE));
-        $logger->pushHandler(new StreamHandler($file, Logger::WARNING));
-        $logger->pushHandler(new StreamHandler($file, Logger::CRITICAL));
     }
 
     /**
