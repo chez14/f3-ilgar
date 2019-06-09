@@ -8,7 +8,7 @@ class HardFailTest extends TestCase
 {
     protected $f3;
     
-    protected function setUp() {
+    protected function setUp():void {
         $this->f3 = \F3::instance();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/packages-test-4/");
         $this->f3->set('ILGAR.show-log', false);
