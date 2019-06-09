@@ -11,7 +11,7 @@ class BasicTest extends TestCase
     protected function setUp():void {
         $this->f3 = \F3::instance();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/packages-test-1/");
-        $this->f3->set('ILGAR.show-log', false);
+        $this->f3->set('ILGAR.show_log', false);
         $this->f3->set('QUIET',TRUE);
         \Chez14\Ilgar\Boot::now();
     }

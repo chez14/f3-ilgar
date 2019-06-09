@@ -10,7 +10,7 @@ class SoftFailTest extends TestCase
     protected function setUp():void {
         $this->f3 = \F3::instance();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/packages-test-3/");
-        $this->f3->set('ILGAR.show-log', false);
+        $this->f3->set('ILGAR.show_log', false);
         $this->f3->set('QUIET',TRUE);
         \Chez14\Ilgar\Boot::now();
     }
@@ -19,6 +19,7 @@ class SoftFailTest extends TestCase
      * @testdox Able to handle soft fail
      */
     public function testFirstStage() {
+        $this->f3->set("ILGAR.no_exception", true);
         \Chez14\Ilgar\Internal::instance()->reset_version();
         $this->f3->mock('GET /ilgar/migrate');
         $stats = \Chez14\Ilgar\Internal::instance()->get_stats();
