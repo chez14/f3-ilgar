@@ -142,14 +142,14 @@ class Internal extends \Prefab {
                 $current = $mig_point['version'];
                 $counter++;
             }, $points);
-        } catch (\Exception $e) {
-            $log->critical('Exception: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            $log->critical('Exception: ' . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".");
             $log->notice('An exception has raised, aborting migration, and now doing soft undo...');
             try {
                 $cls->on_failed($e);
                 $log->notice('Soft undo successfull');
-            } catch(\Exception $e) {
-                $log->critical("Undo failed. Please check: " . $e->getMessage());
+            } catch(\Throwable $e) {
+                $log->critical("Undo failed. Exception raised : " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".");
             }
             $failed = $e;
         }
@@ -173,8 +173,8 @@ class Internal extends \Prefab {
             "version" => $current
         ];
 
-        if($this->setting['show-log']) {
-
+        if($failed) {
+            throw \RuntimeException("Migration failed with exception " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".", $failed);
         }
 
         return $this->stats;
