@@ -34,14 +34,18 @@ class Internal extends \Prefab {
             "info" => dirname(__DIR__) . "/data/migration.json",
             "path" => "migration/",
             "prefix" => "Migration\\",
-            "show-log" => true,
+            "show_log" => true,
             "access_path" => "GET @ilgar: /ilgar/migrate",
-            "logger" => $logger
+            "logger" => $logger,
+            "no_exception" => false
         ], $setting);
         $f3->set('ILGAR', $this->setting);
 
-        if($this->setting['show-log']) {
-            header('Content-type: text/plain');
+        if($this->setting['show_log']) {
+            if(!(php_sapi_name() === 'cli')) {
+                header('Content-type: text/plain');
+            }
+
             $file = "php://output";
        }
         $logger->pushHandler(new StreamHandler($file, Logger::INFO));
@@ -173,8 +177,8 @@ class Internal extends \Prefab {
             "version" => $current
         ];
 
-        if($failed) {
-            throw \RuntimeException("Migration failed with exception " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".", $failed);
+        if($failed && !$this->setting['no_exception']) {
+            throw new \RuntimeException("Migration failed with exception " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".", 0, $failed);
         }
 
         return $this->stats;
@@ -216,6 +220,7 @@ class Internal extends \Prefab {
      * @return void
      */
     public function reset_version() {
+        $this->load_setting();
         $migration_path = $this->setting['info'];
         if(\file_exists($migration_path)) {
             \unlink($migration_path);
