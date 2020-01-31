@@ -87,7 +87,7 @@ class Test01 extends \Chez14\Ilgar\MigrationPacket {
 ## `MigrationPacket` abstract class
 It's just a normal class. With something that you need to implement:
  - `on_migrate()`
- - `on_falied(\Exception $e)`
+ - `on_failed(\Exception $e)`
 
 Ilgar has 2 ability, *bomb* and *self-destruct*. **Bomb** means do the migration mission (`on_migrate`), **self-destruct** means when it failed do the mission it will use their remaining power to do suicide bombing, in this matter, it means rollback the migration mission (`on_failed`).
 
