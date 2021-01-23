@@ -4,22 +4,29 @@
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run test
 
+before_script:
+  - apk update
+  - apk add -y zip unzip
+  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - php composer-setup.php
+  - php -r "unlink('composer-setup.php');"
+
 php-7.1:
-  image: php:7.3
+  image: php:7.3-alpine
   <<: *phptest
 
 php-7.2:
-  image: php:7.3
+  image: php:7.3-alpine
   <<: *phptest
 
 php-7.3:
-  image: php:7.3
+  image: php:7.3-alpine
   <<: *phptest
 
 php-7.4:
-  image: php:7.4
+  image: php:7.4-alpine
   <<: *phptest
 
 php-8:
-  image: php:8
+  image: php:8-alpine
   <<: *phptest
