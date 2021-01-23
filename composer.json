@@ -28,6 +28,6 @@
     },
     "scripts": {
         "test-dry" : "phpunit --testdox",
-        "test":"composer require phpunit/phpunit && phpunit --testdox"
+        "test":"composer require phpunit/phpunit && ./vendor/bin/phpunit --testdox"
     }
 }
