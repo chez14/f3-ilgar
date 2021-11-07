@@ -1,5 +1,7 @@
 <?php
-Namespace Chez14\Ilgar;
+
+namespace CHEZ14\Ilgar;
+
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -9,71 +11,76 @@ use Monolog\Handler\StreamHandler;
  * settings.
  * This class have the main Migration Lifecycle.
  */
-class Internal extends \Prefab {
-    protected
-        $setting;
+class Internal extends \Prefab
+{
+    protected $setting;
 
-    protected
-        $stats = [];
+    protected $stats = [];
 
-    public function __construct() {
-        $this->load_setting();
+    public function __construct()
+    {
+        $this->loadSetting();
     }
 
     /**
      * Get and set the settings option.
      */
-    private function load_setting() {
+    private function loadSetting()
+    {
         $f3 = \Base::instance();
         $setting = $f3->get('ILGAR');
 
         $file = dirname(__DIR__) . "/data/log.log";
         $logger = new Logger('migration');
         // Default setting
-        $this->setting = array_merge([
-            "info" => dirname(__DIR__) . "/data/migration.json",
-            "path" => "migration/",
-            "prefix" => "Migration\\",
-            "show_log" => true,
-            "access_path" => "GET @ilgar: /ilgar/migrate",
-            "logger" => $logger,
-            "no_exception" => false
-        ], $setting);
+        $this->setting = array_merge(
+            [
+                "info" => dirname(__DIR__) . "/data/migration.json", //TODO: Move to MYSQL.
+                "path" => "migration/",
+                "prefix" => "Migration\\",
+                "show_log" => true,
+                "access_path" => "GET @ilgar: /ilgar/migrate",
+                "logger" => $logger,
+                "no_exception" => false
+            ],
+            $setting
+        );
         $f3->set('ILGAR', $this->setting);
 
-        if($this->setting['show_log']) {
-            if(!(php_sapi_name() === 'cli')) {
+        if ($this->setting['show_log']) {
+            if (!(php_sapi_name() === 'cli')) {
                 header('Content-type: text/plain');
             }
 
             $file = "php://output";
-       }
+        }
         $logger->pushHandler(new StreamHandler($file, Logger::INFO));
     }
 
     /**
      * Triggers migration and much more.
      * NOT RECOMENDED FOR PUBLIC USE. PLEASE USE Boot::trigger_on().
-     * 
-     * @return Array quick stats
+     *
+     * @return array quick stats
      */
-    public function do_migrate() {
-        $this->load_setting();
+    public function doMigrate()
+    {
+        $this->loadSetting();
         $path = $this->setting['path'];
         $log = $this->setting['logger'];
 
         $log->notice("Migration Started");
 
-        $migration_packages=scandir($path);
+        $migration_packages = scandir($path);
         $points = array_splice($migration_packages, 2);
         natcasesort($points);
 
         $prefix = $this->setting['prefix'];
 
-        $points = array_map(function($file) use ($path, $prefix, &$log){
+        $points = array_map(function ($file) use ($path, $prefix, &$log) {
             $fname = basename($file);
             $log->info('Proccessing ' . $file);
-            if(!is_file($path . $file)){
+            if (!is_file($path . $file)) {
                 $log->info('Current file was not a file.');
                 return null;
             }
@@ -82,7 +89,7 @@ class Internal extends \Prefab {
 
             preg_match("/([0-9]+)\-([\w\_]+).php/i", $fname, $components);
 
-            if(!$components || !$components[1] || !$components[2]){
+            if (!$components || !$components[1] || !$components[2]) {
                 $log->warning('The file name is in not a valid name convention. Skipping...');
                 return null;
             }
@@ -91,30 +98,30 @@ class Internal extends \Prefab {
 
             return [
                 "version" => intval($components[1]),
-                "classname" => $prefix .$components[2],
+                "classname" => $prefix . $components[2],
                 "path" => $path . $file
             ];
         }, $points);
 
-        $points = array_filter($points, function($data){
-            return $data!=null;
+        $points = array_filter($points, function ($data) {
+            return $data != null;
         });
         $log->notice('Found ' . count($points) . " migrations.");
 
         $migration_path = $this->setting['info'];
-        
+
         $current = -1;
-        if(file_exists($migration_path)) {
+        if (file_exists($migration_path)) {
             $migrate = file_get_contents($migration_path);
             $migrate = json_decode($migrate, true);
-            if(array_key_exists('version', $migrate)) {
+            if (array_key_exists('version', $migrate)) {
                 $current = $migrate['version'];
             }
         }
 
         $log->notice("Info file loaded. Current migration version: " . $current);
         //filter the version here.
-        $points = array_filter($points, function($data) use($current) {
+        $points = array_filter($points, function ($data) use ($current) {
             return ($data['version'] > $current);
         });
 
@@ -124,21 +131,21 @@ class Internal extends \Prefab {
         $skipped = [];
         $failed = null;
         try {
-            array_map(function($mig_point) use (&$current, &$cls, &$counter, &$skipped, &$log){
+            array_map(function ($mig_point) use (&$current, &$cls, &$counter, &$skipped, &$log) {
                 include($mig_point['path']);
 
                 $log->info("Loading " . $mig_point['classname']);
                 //call the class:
                 $cls = new $mig_point['classname']();
 
-                if(!$cls->is_migratable()) {
+                if (!$cls->isMigratable()) {
                     $log->warning('Skipping ' . $mig_point['classname'] . ' as its marked itself not aplicable');
                     $skipped[] = $cls;
                     return;
                 }
-                
+
                 $log->notice("Applying migration...");
-                if($cls->pre_migrate() === false || $cls->on_migrate() === false || $cls->post_migrate() === false) {
+                if ($cls->preMigrate() === false || $cls->onMigrate() === false || $cls->postMigrate() === false) {
                     $log->notice('The migration returns a soft error.');
                     $log->notice('Raising Exceptions.');
                     throw new \Exception("Migration failed at file " . $mig_point['classname']);
@@ -150,9 +157,9 @@ class Internal extends \Prefab {
             $log->critical('Exception: ' . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".");
             $log->notice('An exception has raised, aborting migration, and now doing soft undo...');
             try {
-                $cls->on_failed($e);
+                $cls->onFailed($e);
                 $log->notice('Soft undo successfull');
-            } catch(\Throwable $e) {
+            } catch (\Throwable $e) {
                 $log->critical("Undo failed. Exception raised : " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".");
             }
             $failed = $e;
@@ -167,7 +174,7 @@ class Internal extends \Prefab {
 
         // pikirin lagi si lognya
         $log->info("Successfully done " . $counter . " migration(s).");
-        if($failed) {
+        if ($failed) {
             $log->info("and encountered exception: " . $failed->getMessage());
         }
 
@@ -177,7 +184,7 @@ class Internal extends \Prefab {
             "version" => $current
         ];
 
-        if($failed && !$this->setting['no_exception']) {
+        if ($failed && !$this->setting['no_exception']) {
             throw new \RuntimeException("Migration failed with exception " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".", 0, $failed);
         }
 
@@ -186,26 +193,28 @@ class Internal extends \Prefab {
 
     /**
      * Get last migration stats.
-     * 
+     *
      * @return Array quick stats
      */
-    public function get_stats() {
+    public function getStats()
+    {
         return $this->stats;
     }
 
     /**
      * Get current migration version
-     * 
+     *
      * @return null if migration haven't been made, int if it does.
      */
-    public function get_current_version() {
+    public function getCurrentVersion()
+    {
         $migration_path = $this->setting['info'];
-        
+
         $current = null;
-        if(file_exists($migration_path)) {
+        if (file_exists($migration_path)) {
             $migrate = file_get_contents($migration_path);
             $migrate = json_decode($migrate, true);
-            if(array_key_exists('version', $migrate)) {
+            if (array_key_exists('version', $migrate)) {
                 $current = $migrate['version'];
             }
         }
@@ -216,16 +225,16 @@ class Internal extends \Prefab {
 
     /**
      * Destroy current migration info
-     * 
+     *
      * @return void
      */
-    public function reset_version() {
-        $this->load_setting();
+    public function resetVersion()
+    {
+        $this->loadSetting();
         $migration_path = $this->setting['info'];
-        if(\file_exists($migration_path)) {
+        if (\file_exists($migration_path)) {
             \unlink($migration_path);
         }
         $this->stats = [];
     }
-
 }
