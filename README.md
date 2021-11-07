@@ -56,7 +56,7 @@ $this->f3->set('ILGAR.path', "new-folder/");
 
 **IMPORTANT!** The file name should be formatted as "0-classname.php", where the 0 is any number (you can use just normal number `1-ClassName.php`, or CI-style timestamp `180901012400-ClassName.php`), seperated with single dash, and followed with your class name, either in lowercase, SnakeCase, or camelCase.
 
-**IMPORTANT!** You need to **extends** `\Chez14\Ilgar\MigrationPacket` class. This will ensure required methods is always available and dependable.
+**IMPORTANT!** You need to **extends** `\CHEZ14\Ilgar\Migration` class. This will ensure required methods is always available and dependable.
 
 <hr>
 
@@ -65,8 +65,8 @@ Here's your file: `1-test01.php`.
 ```php
 namespace Migration;
 
-class Test01 extends \Chez14\Ilgar\MigrationPacket {
-    public function on_migrate(){
+class Test01 extends \CHEZ14\Ilgar\Migration {
+    public function onMigrate() : void{
         // Do your things here!
         // All the F3 object were loaded, F3 routines executed,
         // this will just like you doing things in your controller file.
@@ -76,7 +76,7 @@ class Test01 extends \Chez14\Ilgar\MigrationPacket {
         echo "Hello from Test01 Migration package";
     }
 
-    public function on_failed(\Exception $e) {
+    public function onFailed(\Exception $e) : void {
 
     }
 }
