@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="f3-ilgar">
+    <description></description>
+    <config name="installed_paths" value="../../chez14/phpcs/src/CHEZ14Standards"/>
+    <rule ref="CHEZ14Standards" scope="path"></rule>
+</ruleset>
