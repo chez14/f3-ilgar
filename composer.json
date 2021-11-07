@@ -5,7 +5,14 @@
     "license": "GPL-3.0-only",
     "homepage": "https://github.com/chez14/f3-ilgar",
     "keywords": [
-        "migration", "migrate", "database", "ilgar", "fat-free framework", "f3", "world trigger", "bomber"
+        "migration",
+        "migrate",
+        "database",
+        "ilgar",
+        "fat-free framework",
+        "f3",
+        "world trigger",
+        "bomber"
     ],
     "authors": [
         {
@@ -21,13 +28,19 @@
         "monolog/monolog": "^1.23"
     },
     "autoload": {
-        "classmap":["src/"]
+        "classmap": [
+            "src/"
+        ]
     },
     "require-dev": {
-        "bcosca/fatfree-core": "^3.6"
+        "bcosca/fatfree-core": "^3.6",
+        "chez14/phpcs": "^0.1.0",
+        "squizlabs/php_codesniffer": "^3.6"
     },
     "scripts": {
-        "test-dry" : "phpunit --testdox",
-        "test":"composer require phpunit/phpunit && ./vendor/bin/phpunit --testdox"
+        "style": "phpcs --standard=./vendor/chez14/phpcs/src/CHEZ14Standards src/ tests/",
+        "style:format": "phpcbf --standard=./vendor/chez14/phpcs/src/CHEZ14Standards src/ tests/",
+        "test-dry": "phpunit --testdox",
+        "test": "composer require phpunit/phpunit && ./vendor/bin/phpunit --testdox"
     }
 }
