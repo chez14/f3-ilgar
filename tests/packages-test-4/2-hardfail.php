@@ -1,12 +1,15 @@
 <?php
+
     namespace Migration;
 
-    class Hardfail extends \Chez14\Ilgar\MigrationPacket {
-        public function on_migrate(){
-            throw new \Exception('Hard fail!');
-        }
-
-        public function on_failed(\Exception $e) {
-            
-        }
+class Hardfail extends \CHEZ14\Ilgar\Migration
+{
+    public function onMigrate() : void
+    {
+        throw new \Exception('Hard fail!');
     }
+
+    public function onFailed(\Exception $e) : void
+    {
+    }
+}

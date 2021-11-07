@@ -1,12 +1,15 @@
 <?php
+
     namespace Migration;
 
-    class Softfail extends \Chez14\Ilgar\MigrationPacket {
-        public function on_migrate(){
-            return false; // triggers soft fail
-        }
-
-        public function on_failed(\Exception $e) {
-            
-        }
+class Softfail extends \CHEZ14\Ilgar\Migration
+{
+    public function onMigrate() : void
+    {
+        return false; // triggers soft fail
     }
+
+    public function onFailed(\Exception $e) : void
+    {
+    }
+}

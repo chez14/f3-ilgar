@@ -1,12 +1,15 @@
 <?php
-    namespace Migration;
 
-    class Test01 extends \Chez14\Ilgar\MigrationPacket {
-        public function on_migrate(){
-            echo "Hello from Test01 Migration package";
-        }
+namespace Migration;
 
-        public function on_failed(\Exception $e) {
-            
-        }
+class Test01 extends \CHEZ14\Ilgar\Migration
+{
+    public function onMigrate(): void
+    {
+        echo "Hello from Test01 Migration package";
     }
+
+    public function onFailed(\Exception $e): void
+    {
+    }
+}
