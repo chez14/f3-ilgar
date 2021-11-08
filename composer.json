@@ -38,7 +38,7 @@
         "squizlabs/php_codesniffer": "^3.6"
     },
     "scripts": {
-        "style": "phpcs --standard=./vendor/chez14/phpcs/src/CHEZ14Standards src/ tests/",
+        "style": "phpcs --standard=./vendor/chez14/phpcs/src/CHEZ14Standards src/",
         "style:format": "phpcbf --standard=./vendor/chez14/phpcs/src/CHEZ14Standards src/ tests/",
         "test-dry": "phpunit --testdox",
         "test": "composer require phpunit/phpunit && ./vendor/bin/phpunit --testdox"

@@ -2,6 +2,7 @@
   stage: test
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+    - composer run style
     - composer run test
 
 before_script:
