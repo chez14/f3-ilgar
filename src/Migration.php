@@ -31,7 +31,7 @@ abstract class Migration implements MigrationInterface
 
     /**
      * Pre-migration event handler
-     * 
+     *
      * @return void
      */
     public function preMigrate(): void
@@ -40,7 +40,7 @@ abstract class Migration implements MigrationInterface
 
     /**
      * Post-migration event handler
-     * 
+     *
      * @return void
      */
     public function postMigrate(): void

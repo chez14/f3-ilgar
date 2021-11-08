@@ -17,6 +17,7 @@ class Internal extends \Prefab
 
     protected $stats = [];
 
+    // phpcs:ignore
     public function __construct()
     {
         $this->loadSetting();
@@ -24,6 +25,8 @@ class Internal extends \Prefab
 
     /**
      * Get and set the settings option.
+     *
+     * @return void
      */
     private function loadSetting()
     {
@@ -154,13 +157,25 @@ class Internal extends \Prefab
                 $counter++;
             }, $points);
         } catch (\Throwable $e) {
-            $log->critical('Exception: ' . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".");
+            $log->critical(sprintf(
+                "Exception raised: %s. On %s#L%d.",
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ));
             $log->notice('An exception has raised, aborting migration, and now doing soft undo...');
             try {
                 $cls->onFailed($e);
                 $log->notice('Soft undo successfull');
             } catch (\Throwable $e) {
-                $log->critical("Undo failed. Exception raised : " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".");
+                $log->critical(
+                    sprintf(
+                        "Undo failed. Exception raised: %s. On %s#L%d.",
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    )
+                );
             }
             $failed = $e;
         }
@@ -185,7 +200,12 @@ class Internal extends \Prefab
         ];
 
         if ($failed && !$this->setting['no_exception']) {
-            throw new \RuntimeException("Migration failed with exception " . $e->getMessage() . ". On " . $e->getFile() . "#L" . $e->getLine() . ".", 0, $failed);
+            throw new \RuntimeException(sprintf(
+                "Migration failed with exception %s. On %s#L%s.",
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine()
+            ), 0, $failed);
         }
 
         return $this->stats;

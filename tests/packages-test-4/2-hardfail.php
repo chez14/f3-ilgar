@@ -4,12 +4,12 @@
 
 class Hardfail extends \CHEZ14\Ilgar\Migration
 {
-    public function onMigrate() : void
+    public function onMigrate(): void
     {
         throw new \Exception('Hard fail!');
     }
 
-    public function onFailed(\Exception $e) : void
+    public function onFailed(\Exception $e): void
     {
     }
 }

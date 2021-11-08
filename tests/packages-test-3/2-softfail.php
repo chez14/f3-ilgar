@@ -4,12 +4,12 @@
 
 class Softfail extends \CHEZ14\Ilgar\Migration
 {
-    public function onMigrate() : void
+    public function onMigrate(): void
     {
         return false; // triggers soft fail
     }
 
-    public function onFailed(\Exception $e) : void
+    public function onFailed(\Exception $e): void
     {
     }
 }
