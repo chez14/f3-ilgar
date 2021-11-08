@@ -28,9 +28,9 @@
         "monolog/monolog": "^1.23"
     },
     "autoload": {
-        "classmap": [
-            "src/"
-        ]
+        "psr-4": {
+            "CHEZ14\\Ilgar\\": "src/"
+        }
     },
     "require-dev": {
         "bcosca/fatfree-core": "^3.6",
