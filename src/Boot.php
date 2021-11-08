@@ -15,7 +15,7 @@ class Boot
     public static function now()
     {
         //boot!
-        $internal = \Chez14\Ilgar\Internal::instance();
+        $internal = \CHEZ14\Ilgar\Internal::instance();
         $path = \F3::instance()->get('ILGAR.path');
         \F3::instance()
             ->route(
@@ -33,6 +33,6 @@ class Boot
      */
     public static function triggerOn()
     {
-        return \Chez14\Ilgar\Internal::instance()->doMigrate();
+        return \CHEZ14\Ilgar\Internal::instance()->doMigrate();
     }
 }

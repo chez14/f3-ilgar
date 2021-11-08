@@ -24,12 +24,12 @@ Quick and simple migration tool for Fat-Free Framework.
 
         Then, just add this to your `index.php` file:
         ```php
-        \Chez14\Ilgar\Boot::now();
+        \CHEZ14\Ilgar\Boot::now();
         ```
 
     - **Do it with your own style and custom security?**
 
-        Just invoke `\Chez14\Ilgar\Boot::trigger_on();` Anywhere at your controller. This will trigger migration process and returns [quick stats](#quick-stats).
+        Just invoke `\CHEZ14\Ilgar\Boot::trigger_on();` Anywhere at your controller. This will trigger migration process and returns [quick stats](#quick-stats).
 
 3. Create your first ever migration packet
 

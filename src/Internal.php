@@ -164,20 +164,23 @@ class Internal extends \Prefab
                 $e->getLine()
             ));
             $log->notice('An exception has raised, aborting migration, and now doing soft undo...');
-            try {
-                $cls->onFailed($e);
-                $log->notice('Soft undo successfull');
-            } catch (\Throwable $e) {
-                $log->critical(
-                    sprintf(
-                        "Undo failed. Exception raised: %s. On %s#L%d.",
-                        $e->getMessage(),
-                        $e->getFile(),
-                        $e->getLine()
-                    )
-                );
-            }
             $failed = $e;
+
+            if ($cls) {
+                try {
+                    $cls->onFailed($e);
+                    $log->notice('Soft undo successfull');
+                } catch (\Throwable $e) {
+                    $log->critical(
+                        sprintf(
+                            "Undo failed. Exception raised: %s. On %s#L%d.",
+                            $e->getMessage(),
+                            $e->getFile(),
+                            $e->getLine()
+                        )
+                    );
+                }
+            }
         }
 
         $log->notice("Migration finished. Version updated to " . $current);

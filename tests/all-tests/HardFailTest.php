@@ -15,7 +15,7 @@ class HardFailTest extends TestCase
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/packages-test-4/");
         $this->f3->set('ILGAR.show_log', false);
         $this->f3->set('QUIET', true);
-        \Chez14\Ilgar\Boot::now();
+        \CHEZ14\Ilgar\Boot::now();
     }
 
     /**
@@ -24,9 +24,9 @@ class HardFailTest extends TestCase
     public function testFirstStage()
     {
         $this->f3->set("ILGAR.no_exception", true);
-        \Chez14\Ilgar\Internal::instance()->resetVersion();
+        \CHEZ14\Ilgar\Internal::instance()->resetVersion();
         $this->f3->mock('GET /ilgar/migrate');
-        $stats = \Chez14\Ilgar\Internal::instance()->getStats();
+        $stats = \CHEZ14\Ilgar\Internal::instance()->getStats();
         $this->assertSame(1, $stats['version']);
         $this->assertSame(1, $stats['success']);
         $this->assertNotNull($stats['last_exception']);
