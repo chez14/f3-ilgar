@@ -2,11 +2,44 @@
 
 namespace CHEZ14\Ilgar;
 
+use Monolog\Logger;
+use RuntimeException;
+
 /**
  * Migration Packet base class.
  */
 abstract class Migration implements MigrationInterface
 {
+
+    /**
+     * @var RunnerContext
+     */
+    protected $runnerContext = null;
+
+    /**
+     * For logging
+     *
+     * @var Logger
+     */
+    protected $logger = null;
+
+    /**
+     * Sets the migration disabled.
+     *
+     * @var boolean
+     */
+    protected $enabled = true;
+
+    /**
+     * Inititates migration before actually running it.
+     *
+     * @param RunnerContext $runnerContext Runner context for this Migration
+     */
+    public function __construct(RunnerContext $runnerContext)
+    {
+        $this->runnerContext = $runnerContext;
+        $this->logger = $runnerContext->getLogger(static::class);
+    }
 
     /**
      * Migration executor
@@ -15,45 +48,25 @@ abstract class Migration implements MigrationInterface
      */
     public function run(): bool
     {
-        try {
-            if ($this->isMigratable()) {
-                $this->preMigrate();
-                $this->onMigrate();
-                $this->postMigrate();
-            }
-        } catch (\Exception $e) {
-            $this->onFailed($e);
+        $logger = $this->logger;
+
+        if (!$this->enabled) {
+            $logger->notice("This migration is set as disabled. Skipping...");
             return false;
         }
 
-        return true;
-    }
+        try {
+            $logger->info("Running migration...");
+            $this->up();
+            $logger->notice("Migration ran");
+        } catch (\Exception $e) {
+            $logger->error("Runner catched an Exception");
+            $logger->error(sprintf("%d: %s", $e->getCode(), $e->getMessage()));
+            $logger->debug(sprintf("From %s#%d", $e->getFile(), $e->getLine()));
+            $logger->debug(sprintf("Stacktrace: %s", $e->getTraceAsString()));
 
-    /**
-     * Pre-migration event handler
-     *
-     * @return void
-     */
-    public function preMigrate(): void
-    {
-    }
-
-    /**
-     * Post-migration event handler
-     *
-     * @return void
-     */
-    public function postMigrate(): void
-    {
-    }
-
-    /**
-     * Check whether this packet is aplicable.
-     *
-     * @return bool
-     */
-    public function isMigratable(): bool
-    {
+            throw new RuntimeException("Migration has encountered an exception", 12, $e);
+        }
         return true;
     }
 }

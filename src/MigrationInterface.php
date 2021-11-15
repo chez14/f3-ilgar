@@ -9,7 +9,7 @@ interface MigrationInterface
      *
      * @return void No return expected.
      */
-    public function onMigrate(): void;
+    public function up(): void;
 
     /**
      * Rollback function, needed as if the migration failed, this will handle
@@ -18,14 +18,7 @@ interface MigrationInterface
      * @param \Exception $e Error contexts of current migration routine
      * @return void No return expected.
      */
-    public function onFailed(\Exception $e): void;
-
-    /**
-     * Check whether this packet is aplicable.
-     *
-     * @return boolean
-     */
-    public function isMigratable(): bool;
+    public function down(?\Exception $e): void;
 
     /**
      * Runs the migration executor
