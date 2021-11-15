@@ -5,7 +5,7 @@ namespace CHEZ14\Ilgar\Util;
 use CHEZ14\Ilgar\RunnerInterface;
 use InvalidArgumentException;
 
-class Database
+class DatabaseFactory
 {
     /**
      * Create DB Util from the DB thingy, with Runner context.
