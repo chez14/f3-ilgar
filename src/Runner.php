@@ -128,28 +128,36 @@ class Runner extends \Prefab implements RunnerContext
         ));
         $migrationRan = 0;
 
-        foreach ($migrationTodo as $mig) {
-            $log->info(sprintf("Running %s...", $mig['name']));
+        try {
+            foreach ($migrationTodo as $mig) {
+                $log->info(sprintf("Running %s...", $mig['name']));
 
-            // Include and create new intance of the newly included class.
-            require($mig['filename']);
-            $mig = new $mig['name']($this);
+                // Include and create new intance of the newly included class.
+                require($mig['filename']);
+                $mig = new $mig['name']($this);
 
-            if (!($mig instanceof MigrationInterface)) {
-                $log->warning(sprintf("File %s are not child of MigrationInterface. Skipping..."));
-                continue;
+                if (!($mig instanceof MigrationInterface)) {
+                    $log->warning(sprintf("File %s are not child of MigrationInterface. Skipping..."));
+                    continue;
+                }
+
+                if (!$migration->run()) {
+                    $log->warning(sprintf("Migration %s self-reports that it doesn't run properly.", $mig['name']));
+                    throw new \RuntimeException(sprintf(
+                        "Migration %s self-reports that it doesn't run properly.",
+                        $mig['name']
+                    ));
+                }
+
+                $dbUtil->addMigration($mig['name'], $mig['version'], $batch);
+                $migrationRan++;
             }
-
-            if (!$migration->run()) {
-                $log->warning(sprintf("Migration %s self-reports that it doesn't run properly.", $mig['name']));
-                continue;
-            }
-
-            $dbUtil->addMigration($mig['name'], $mig['version'], $batch);
-            $migrationRan++;
+            $log->info(sprintf("Runner has run %d migration(s) successfully.", $migrationRan));
+        } catch (\Exception $e) {
+            $log->critical(sprintf("Runner has encountered an error: %s.", $e->getMessage()));
+            $log->debug("Here's the trace");
+            $log->debug($e->getTraceAsString());
         }
-
-        $log->info(sprintf("Runner has run %d migration(s) successfully.", $migrationRan));
     }
 
     /**
