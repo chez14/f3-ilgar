@@ -5,7 +5,7 @@ namespace CHEZ14\Ilgar\Util;
 use CHEZ14\Ilgar\Runner;
 use DB\Mongo\Mapper;
 
-class DatabaseMongoLike extends \Prefab implements DatabaseUtilInterface
+class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
 {
     protected $internalDB = null;
     protected $cursor = null;

@@ -5,7 +5,7 @@ namespace CHEZ14\Ilgar\Util;
 use CHEZ14\Ilgar\Runner;
 use DB\SQL\Mapper;
 
-class DatabaseSQLLike extends \Prefab implements DatabaseUtilInterface
+class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
 {
     protected $internalDB = null;
     protected $cursor = null;
@@ -60,7 +60,7 @@ class DatabaseSQLLike extends \Prefab implements DatabaseUtilInterface
     /**
      * Unregister migration from DB.
      *
-     * @param string $migrationName Migration Class Name. MUST be class name.
+     * @param string $className Migration Class Name. MUST be class name.
      * @return void
      */
     public function deleteMigration(string $className): void

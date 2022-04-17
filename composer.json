@@ -35,7 +35,7 @@
     },
     "require-dev": {
         "bcosca/fatfree-core": "^3.6",
-        "chez14/phpcs": "^0.1.0",
+        "chez14/phpcs": "^1.0",
         "squizlabs/php_codesniffer": "^3.6"
     },
     "scripts": {

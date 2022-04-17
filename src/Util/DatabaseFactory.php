@@ -18,9 +18,9 @@ class DatabaseFactory
     {
         $returnPath = null;
         if ($db instanceof \DB\SQL) {
-            $returnPath = new DatabaseSQLLike($db, $runner);
+            $returnPath = new DatabaseSQLish($db, $runner);
         } elseif ($db instanceof \DB\Mongo) {
-            $returnPath = new DatabaseMongoLike($db, $runner);
+            $returnPath = new DatabaseMongoish($db, $runner);
         } else {
             throw new InvalidArgumentException(
                 sprintf("DB Class %d is not supported.", get_class($db))

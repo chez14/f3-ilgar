@@ -2,8 +2,6 @@
 
 namespace CHEZ14\Ilgar\Util;
 
-use DateTime;
-
 interface DatabaseUtilInterface
 {
     /**
