@@ -40,8 +40,8 @@
         "phpunit/phpunit": "^9.5"
     },
     "scripts": {
-        "style": "phpcs --standard=./vendor/chez14/phpcs/src/CHEZ14Standards src/",
-        "style:format": "phpcbf --standard=./vendor/chez14/phpcs/src/CHEZ14Standards src/ tests/",
+        "style": "phpcs src/",
+        "style:format": "phpcbf src/ tests/",
         "test": "phpunit --testdox"
     }
 }
