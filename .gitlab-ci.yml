@@ -6,16 +6,18 @@ stages:
 Compability Test:
   image: php:${PHP_VER}
   stage: test
-  script:
-    - composer install --prefer-dist --no-ansi --no-interaction --no-progress
-    - composer run style
-    - composer run test -- --log-junit report.xml
+  services:
+    - mysql:latest
   before_script:
     - apk update
     - apk add zip unzip
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
+  script:
+    - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+    - composer run style
+    - composer run test -- --log-junit report.xml
   parallel:
     matrix:
       - PHP_VER: [7.4-alpine, 8.0-alpine, 8.1-alpine, 7-alpine, 8-alpine]
@@ -23,8 +25,6 @@ Compability Test:
     when: always
     reports:
       junit: report.xml
-
-
 
 Publisher (Tag):
   stage: deploy

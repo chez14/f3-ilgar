@@ -24,9 +24,9 @@ class HardFailTest extends TestCase
     public function testFirstStage()
     {
         $this->f3->set("ILGAR.no_exception", true);
-        \CHEZ14\Ilgar\Internal::instance()->resetVersion();
+        \CHEZ14\Ilgar\Runner::instance()->resetVersion();
         $this->f3->mock('GET /ilgar/migrate');
-        $stats = \CHEZ14\Ilgar\Internal::instance()->getStats();
+        $stats = \CHEZ14\Ilgar\Runner::instance()->getStats();
         $this->assertSame(1, $stats['version']);
         $this->assertSame(1, $stats['success']);
         $this->assertNotNull($stats['last_exception']);

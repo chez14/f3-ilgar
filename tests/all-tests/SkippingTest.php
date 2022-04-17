@@ -23,9 +23,9 @@ class SkippingTest extends TestCase
      */
     public function testFirstStage()
     {
-        \CHEZ14\Ilgar\Internal::instance()->resetVersion();
+        \CHEZ14\Ilgar\Runner::instance()->resetVersion();
         $this->f3->mock('GET /ilgar/migrate');
-        $stats = \CHEZ14\Ilgar\Internal::instance()->getStats();
+        $stats = \CHEZ14\Ilgar\Runner::instance()->getStats();
         $this->assertSame(3, $stats['version']);
         $this->assertSame(2, $stats['success']);
         $this->assertNull($stats['last_exception']);
@@ -38,7 +38,7 @@ class SkippingTest extends TestCase
     public function testSecondStage()
     {
         $this->f3->mock('GET /ilgar/migrate');
-        $stats = \CHEZ14\Ilgar\Internal::instance()->getStats();
+        $stats = \CHEZ14\Ilgar\Runner::instance()->getStats();
         $this->assertSame(3, $stats['version']);
         $this->assertSame(0, $stats['success']);
         $this->assertNull($stats['last_exception']);
