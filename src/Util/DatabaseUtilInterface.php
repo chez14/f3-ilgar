@@ -14,9 +14,9 @@ interface DatabaseUtilInterface
     /**
      * Get latest batch for rerolling.
      *
-     * @return array
+     * @return int
      */
-    public function getLatestBatch(): array;
+    public function getLatestBatch(): int;
 
     /**
      * Get All Migrations that have been ran and recorded in the DB.

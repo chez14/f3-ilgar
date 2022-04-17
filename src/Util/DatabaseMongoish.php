@@ -34,15 +34,21 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     /**
      * Get latest batch for rerolling.
      *
-     * @return array
+     * @return int
      */
-    public function getLatestBatch(): array
+    public function getLatestBatch(): int
     {
-        return $this->cursor->select("batch", null, [
+        $batch = $this->cursor->select("batch", null, [
             "group" => "batch",
             "order" => "batch desc",
             "limit" => 1
         ]);
+
+        if (!$batch) {
+            return -1;
+        }
+
+        return $batch[0]['batch'];
     }
 
     /**
