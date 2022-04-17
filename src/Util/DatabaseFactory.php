@@ -2,7 +2,7 @@
 
 namespace CHEZ14\Ilgar\Util;
 
-use CHEZ14\Ilgar\RunnerInterface;
+use CHEZ14\Ilgar\Runner;
 use InvalidArgumentException;
 
 class DatabaseFactory
@@ -11,10 +11,10 @@ class DatabaseFactory
      * Create DB Util from the DB thingy, with Runner context.
      *
      * @param mixed $db The DB
-     * @param RunnerInterface $runner the Runner context
+     * @param Runner $runner the Runner context
      * @return DatabaseUtilInterface
      */
-    public static function createFrom(mixed $db, RunnerInterface $runner): DatabaseUtilInterface
+    public static function createFrom(mixed $db, Runner $runner): DatabaseUtilInterface
     {
         $returnPath = null;
         if ($db instanceof \DB\SQL) {

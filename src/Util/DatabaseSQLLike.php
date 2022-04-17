@@ -3,7 +3,6 @@
 namespace CHEZ14\Ilgar\Util;
 
 use CHEZ14\Ilgar\Runner;
-use CHEZ14\Ilgar\RunnerInterface;
 use DB\SQL\Mapper;
 
 class DatabaseSQLLike extends \Prefab implements DatabaseUtilInterface
@@ -13,7 +12,7 @@ class DatabaseSQLLike extends \Prefab implements DatabaseUtilInterface
     protected $runner = null;
 
     // phpcs:ignore
-    public function __construct(\DB\SQL $db, RunnerInterface $runner)
+    public function __construct(\DB\SQL $db, Runner $runner)
     {
         $this->internalDB = $db;
         $this->runner = $runner;
