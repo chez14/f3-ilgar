@@ -2,6 +2,9 @@
 /data/log.log
 .phpunit.cache/test-results
 
+/.phpdoc/
+/public/
+
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db
