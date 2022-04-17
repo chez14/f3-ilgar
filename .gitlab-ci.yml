@@ -26,7 +26,7 @@ Compability Test:
 
 
 
-publish_tag:
+Publisher (Tag):
   stage: deploy
   image: registry.gitlab.com/chez14/publisher:v1.0.2
   ## run only when this is not a tagged commit.
@@ -41,7 +41,7 @@ publish_tag:
     - autotag
     - git push --tags
 
-release:
+GitLab Release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   needs:
@@ -55,3 +55,18 @@ release:
     description: "Release created using the release-cli."
     tag_name: $CI_COMMIT_TAG
     ref: $CI_COMMIT_TAG
+
+Documentation:
+  image: phpdoc/phpdoc:3
+  stage: deploy
+  variables:
+      PUBLIC_URL: "/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public"
+  script:
+    - phpdoc
+    - echo "Documentation published on https://${CI_PROJECT_NAMESPACE}.gitlab.io/-/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/public/index.html"
+  environment:
+      name: Docs
+      url: "https://$CI_PROJECT_NAMESPACE.gitlab.io/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+  artifacts:
+      paths:
+        - public
