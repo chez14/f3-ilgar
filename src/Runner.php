@@ -269,10 +269,11 @@ class Runner extends \Prefab implements RunnerContext
     /**
      * Get configuration from Runner Contexts
      *
+     * @since 2.0.0
      * @param string $configName Configuration Key
-     * @return mixed
+     * @return mixed|object
      */
-    public function getConfig(string $configName): mixed
+    public function getConfig(string $configName)
     {
         if (key_exists($configName, $this->config)) {
             return $this->config[$configName];
