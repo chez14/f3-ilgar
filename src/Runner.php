@@ -4,6 +4,7 @@ namespace CHEZ14\Ilgar;
 
 use CHEZ14\Ilgar\Util\DatabaseFactory;
 use InvalidArgumentException;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
@@ -17,7 +18,6 @@ class Runner extends \Prefab implements RunnerContext
     public const CONFIG_WEBLOG = "show_log";
     public const CONFIG_ROUTE = "access_path";
     public const CONFIG_LOGGER = "logger";
-    public const CONFIG_INFO = "info";
 
     /**
      * Logger Internals
@@ -26,7 +26,59 @@ class Runner extends \Prefab implements RunnerContext
      */
     protected $logger;
 
-    protected $config;
+    /**
+     * Configuration for this particular class for quicker access.
+     *
+     * @var array
+     */
+    protected $config = [];
+
+    /**
+     * Setup our current configuration
+     *
+     * @param boolean $updateToF3 Update the default config to FatFree's Registry.
+     *
+     * @return void
+     */
+    public function setupConfig($updateToF3 = true)
+    {
+        $f3 = \Base::instance();
+        $setting = $f3->get('ILGAR');
+        // This are default configurations
+        $config = [
+            self::CONFIG_MIGRATIONPATH => "migration/",
+            self::CONFIG_MIGRATIONPREFIX => "Migration\\",
+            self::CONFIG_WEBLOG => true,
+            self::CONFIG_ROUTE => "GET @ilgar: /ilgar/migrate",
+            self::CONFIG_DB => $f3->get('DB'),
+            self::CONFIG_TABLENAME => "migrations",
+        ];
+
+        $config = array_merge($config, $setting);
+
+        if (!$config[self::CONFIG_LOGGER]) {
+            $logger = new Logger('migration');
+            $config[self::CONFIG_LOGGER] = $logger;
+        }
+
+        if ($config[self::CONFIG_WEBLOG]) {
+            if (!(php_sapi_name() === 'cli')) {
+                header('Content-type: text/plain');
+            }
+
+            $file = "php://output";
+            $logger->pushHandler(new StreamHandler($file, Logger::INFO));
+        }
+
+        // Update the config to our internals
+        $this->config = $config;
+        $this->logger = $this->getConfig(self::CONFIG_LOGGER);
+
+        // Update the config to Fatfree
+        if ($updateToF3) {
+            $f3->set('ILGAR', $config);
+        }
+    }
 
     /**
      * Gets logger instance for logging things.
@@ -47,7 +99,7 @@ class Runner extends \Prefab implements RunnerContext
      *
      * @return void
      */
-    protected function runMigrations()
+    public function runMigrations()
     {
         $db = $this->getConfig(self::CONFIG_DB);
         $dbUtil = DatabaseFactory::createFrom($db, $this);
