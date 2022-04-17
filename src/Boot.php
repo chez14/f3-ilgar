@@ -15,13 +15,13 @@ class Boot
     public static function now()
     {
         //boot!
-        $internal = \CHEZ14\Ilgar\Internal::instance();
-        $path = \F3::instance()->get('ILGAR.path');
+        $internal = \CHEZ14\Ilgar\Runner::instance();
+        $internal->setupConfig();
         \F3::instance()
             ->route(
-                \F3::instance()->get('ILGAR.access_path'),
+                $internal->getConfig(Runner::CONFIG_ROUTE),
                 function ($f3) use (&$internal) {
-                    $internal->doMigrate();
+                    return $internal->runMigrations();
                 }
             );
     }
@@ -33,6 +33,8 @@ class Boot
      */
     public static function triggerOn()
     {
-        return \CHEZ14\Ilgar\Internal::instance()->doMigrate();
+        $internal = \CHEZ14\Ilgar\Runner::instance();
+        $internal->setupConfig();
+        return $internal->runMigrations();
     }
 }
