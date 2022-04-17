@@ -2,6 +2,14 @@
 
 namespace CHEZ14\Ilgar;
 
+/**
+ * Migration interface to keep our current API contract for public.
+ *
+ * You're not supposed to implement this interface directly, but you can do so
+ * if you want your own custom behavior. You're reccomended to extend
+ * {@see Migration} class to create a migration instead of implementing this
+ * interface directly.
+ */
 interface MigrationInterface
 {
     /**

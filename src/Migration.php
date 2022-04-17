@@ -7,6 +7,10 @@ use RuntimeException;
 
 /**
  * Migration Packet base class.
+ *
+ * Extend this class and put it in your migration folder.
+ *
+ * @since 2.0.0
  */
 abstract class Migration implements MigrationInterface
 {

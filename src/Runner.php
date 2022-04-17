@@ -8,9 +8,20 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Runner Class is the main heart of this project. This class responsible to
+ * scan, coordinate and run the migration scripts, inform the DB class to save
+ * those information and provide small stats data to the callers.
+ *
+ * You're not supposed to directly trigger the {@see Runner::runMigration()}
+ * functions directly. If you want to do so, we're reccomending you to trigger
+ * run the migration via {@see Boot::triggerOn()}.
+ */
 class Runner extends \Prefab implements RunnerContext
 {
-
+    /**
+     * Configuration table key. Default configuration will automatically fills to `migration`.
+     */
     public const CONFIG_TABLENAME = "table";
     public const CONFIG_DB = "db";
     public const CONFIG_MIGRATIONPATH = "path";
@@ -32,6 +43,17 @@ class Runner extends \Prefab implements RunnerContext
      * @var array
      */
     protected $config = [];
+
+    /**
+     * Our internal statistics
+     *
+     * @var array
+     */
+    protected $stats = [
+        "success" => 0,
+        "last_exception" => null,
+        "version" => 0
+    ];
 
     /**
      * Setup our current configuration
@@ -97,6 +119,8 @@ class Runner extends \Prefab implements RunnerContext
     /**
      * Run the migrations from the scanned path
      *
+     * NOT RECOMENDED FOR PUBLIC USE. PLEASE USE {@see Boot::triggerOn()}.
+     *
      * @return void
      */
     public function runMigrations()
@@ -126,8 +150,11 @@ class Runner extends \Prefab implements RunnerContext
             count($migrationTodo),
             $batch
         ));
-        $migrationRan = 0;
 
+        // Variables for reporting
+        $migrationRan = 0;
+        $failed = null;
+        $latestRanVersion = null;
         try {
             foreach ($migrationTodo as $mig) {
                 $log->info(sprintf("Running %s...", $mig['name']));
@@ -151,13 +178,21 @@ class Runner extends \Prefab implements RunnerContext
 
                 $dbUtil->addMigration($mig['name'], $mig['version'], $batch);
                 $migrationRan++;
+                $latestRanVersion = $mig['version'];
             }
             $log->info(sprintf("Runner has run %d migration(s) successfully.", $migrationRan));
         } catch (\Exception $e) {
             $log->critical(sprintf("Runner has encountered an error: %s.", $e->getMessage()));
             $log->debug("Here's the trace");
             $log->debug($e->getTraceAsString());
+            $failed = $e;
         }
+
+        $this->stats = [
+            "success" => $migrationRan,
+            "last_exception" => $failed,
+            "version" => $latestRanVersion
+        ];
     }
 
     /**
@@ -244,5 +279,71 @@ class Runner extends \Prefab implements RunnerContext
         }
 
         throw new InvalidArgumentException("Invalid config name");
+    }
+
+    /**
+     * Destroy current migration info
+     *
+     * @return void
+     */
+    public function resetVersion(): void
+    {
+    }
+
+    /**
+     * Get current migration version
+     *
+     * @since 1.0.0
+     * @deprecated This function will be deprecated in next major release, use
+     * {@see Runner::getCurrentVersion()} instead.
+     * @return integer|null
+     */
+    public function get_current_version(): mixed // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    {
+        return $this->getCurrentVersion();
+    }
+
+    /**
+     * Get current migration version
+     * @since 2.0.0
+     * @return integer|null
+     */
+    public function getCurrentVersion(): mixed
+    {
+        return null;
+    }
+
+    /**
+     * Get last migration stats.
+     *
+     * This function will return an array with the following keys:
+     * - success int → Number of migration ran on last run.
+     * - last_exception Exception|null→ Last exception occured
+     * - version int → Currently ran version.
+     *
+     * @since 2.0.0
+     * @return array
+     */
+    public function getStats(): array
+    {
+        return $this->stat;
+    }
+
+    /**
+     * Get last migration stats.
+     *
+     * This function will return an array with the following keys:
+     * - success int → Number of migration ran on last run.
+     * - last_exception Exception|null→ Last exception occured
+     * - version int → Currently ran version.
+     *
+     * @since 1.0.0
+     * @deprecated This function will be deprecated in next major release, use
+     * {@see Runner::getCurrentVersion()} instead.
+     * @return array
+     */
+    public function get_stats(): array // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    {
+        return $this->getStats();
     }
 }

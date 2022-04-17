@@ -8,7 +8,7 @@ class Softfail extends \CHEZ14\Ilgar\Migration
     {
         return false;
     }
-    
+
     public function up(): void
     {
     }

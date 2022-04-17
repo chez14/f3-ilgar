@@ -2,10 +2,14 @@
 
 namespace CHEZ14\Ilgar;
 
+// phpcs:ignoreFile PSR1.Methods.CamelCapsMethodName.NotCamelCaps
 /**
- * Migration Packet base class.
+ * Migration Packet base class for backward compability. This class serves as a
+ * little adaptor for F3-Ilgar v1 users and sends warning of deprecation of this
+ * class.
  *
- * @deprecated This class will be removed in future major release
+ * @deprecated This class will be removed in future major release, please extend {@see Migration} class instead.
+ * @since 1.0.0
  */
 abstract class MigrationPacket extends Migration
 {
@@ -48,12 +52,10 @@ abstract class MigrationPacket extends Migration
         return;
     }
 
-    // phpcs:disable
     /**
      * Migration worker function.
      *
-     * @deprecated This method will be deprecated in next major release, please
-     * use `migrate` instead,
+     * @deprecated This method will be deprecated in next major release.
      * @see Migration::up()
      * @return void
      */
@@ -63,8 +65,8 @@ abstract class MigrationPacket extends Migration
 
     /**
      * Pre-migration event handler
-     * 
-     * @deprecated This method will be deprecated in next major release
+     *
+     * @deprecated This method will be deprecated in next major release.
      * @return void
      * phpcs-ignore-line
      */
@@ -74,8 +76,8 @@ abstract class MigrationPacket extends Migration
 
     /**
      * Post-migration event handler
-     * 
-     * @deprecated This method will be deprecated in next major release
+     *
+     * @deprecated This method will be deprecated in next major release.
      * @return void
      */
     public function post_migrate(): void
@@ -86,7 +88,7 @@ abstract class MigrationPacket extends Migration
     /**
      * Check whether this packet is aplicable.
      *
-     * @deprecated This method will be deprecated in next major release
+     * @deprecated This method will be deprecated in next major release.
      * @return bool
      */
     public function is_migratable(): bool
@@ -98,12 +100,11 @@ abstract class MigrationPacket extends Migration
      * Rollback function, needed as if the migration failed, this will handle
      * the problem.
      *
-     * @deprecated This method will be deprecated in next major release
+     * @deprecated This method will be deprecated in next major release.
      * @param \Exception $e Error contexts
      * @return mixed
      */
     public function on_failed(\Exception $e)
     {
     }
-    // phpcs:enable
 }
