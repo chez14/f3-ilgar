@@ -1,33 +1,57 @@
-.php_test: &phptest
+stages:
+  - test
+  - deploy
+  - release
+
+Compability Test:
+  image: php:${PHP_VER}
   stage: test
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run style
-    - composer run test
+    - composer run test -- --log-junit report.xml
+  before_script:
+    - apk update
+    - apk add zip unzip
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    - php -r "unlink('composer-setup.php');"
+  parallel:
+    matrix:
+      - PHP_VER: [7.4-alpine, 8.0-alpine, 8.1-alpine, 7-alpine, 8-alpine]
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
 
-before_script:
-  - apk update
-  - apk add zip unzip
-  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-  - php -r "unlink('composer-setup.php');"
 
-php-7.1:
-  image: php:7.3-alpine
-  <<: *phptest
 
-php-7.2:
-  image: php:7.3-alpine
-  <<: *phptest
+publish_tag:
+  stage: deploy
+  image: registry.gitlab.com/chez14/publisher:v1.0.2
+  ## run only when this is not a tagged commit.
+  rules:
+    - if: '$CI_COMMIT_TAG == null && $CI_COMMIT_REF_PROTECTED == "true"'
+  needs:
+    - "Compability Test"
+  script:
+    - setup-ssh.sh
+    - setup-git.sh
+    - gitlab-unshallow.sh
+    - autotag
+    - git push --tags
 
-php-7.3:
-  image: php:7.3-alpine
-  <<: *phptest
-
-php-7.4:
-  image: php:7.4-alpine
-  <<: *phptest
-
-php-8:
-  image: php:8-alpine
-  <<: *phptest
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - "Compability Test"
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Running the release job."
+  release:
+    name: "Release $CI_COMMIT_TAG"
+    description: "Release created using the release-cli."
+    tag_name: $CI_COMMIT_TAG
+    ref: $CI_COMMIT_TAG
