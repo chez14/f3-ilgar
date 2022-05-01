@@ -14,7 +14,6 @@ use RuntimeException;
  */
 abstract class Migration implements MigrationInterface
 {
-
     /**
      * @var RunnerContext
      */
