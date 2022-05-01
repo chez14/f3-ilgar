@@ -157,6 +157,7 @@ class Runner extends \Prefab implements RunnerContext
 
         if (!$config[self::CONFIG_LOGGER]) {
             $logger = new Logger('migration');
+            $logger->pushHandler(new \Monolog\Handler\NullHandler());
             $config[self::CONFIG_LOGGER] = $logger;
         }
 
