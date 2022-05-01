@@ -33,15 +33,21 @@
             "CHEZ14\\Ilgar\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "CHEZ14\\Ilgar\\Test\\": "test/"
+        }
+    },
     "require-dev": {
         "bcosca/fatfree-core": "^3.6",
         "chez14/phpcs": "^1.0",
         "squizlabs/php_codesniffer": "^3.6",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "php-mock/php-mock-phpunit": "^2.6"
     },
     "scripts": {
         "style": "phpcs src/",
-        "style:format": "phpcbf src/ tests/",
+        "style:format": "phpcbf src/ test/",
         "test": "phpunit --testdox"
     }
 }
