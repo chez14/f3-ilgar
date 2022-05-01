@@ -3,9 +3,24 @@ stages:
   - deploy
   - release
 
+Styling Check:
+  stage: test
+  image: php:8-alpine
+  before_script:
+    - apk update
+    - apk add zip unzip
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    - php -r "unlink('composer-setup.php');"
+  script:
+    - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+    - composer run style
+
 Compability Test:
   image: php:${PHP_VER}
   stage: test
+  needs:
+    - "Styling Check"
   services:
     - mysql:latest
   before_script:
@@ -16,7 +31,6 @@ Compability Test:
     - php -r "unlink('composer-setup.php');"
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
-    - composer run style
     - composer run test -- --log-junit report.xml
   parallel:
     matrix:
@@ -62,7 +76,7 @@ Documentation:
   variables:
       PUBLIC_URL: "/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public"
   script:
-    - phpdoc
+    - vendor/bin/phpdoc
     - echo "Documentation published on https://${CI_PROJECT_NAMESPACE}.gitlab.io/-/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/public/index.html"
   environment:
       name: Docs
