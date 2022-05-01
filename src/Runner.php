@@ -20,15 +20,92 @@ use Psr\Log\LoggerInterface;
 class Runner extends \Prefab implements RunnerContext
 {
     /**
-     * Configuration table key. Default configuration will automatically fills to `migration`.
+     * `table` configuration key.
+     *
+     * Default configuration will automatically fills to `migration`. Default to
+     * `migration`.
+     *
+     * @since 2.0.0
      */
     public const CONFIG_TABLENAME = "table";
+
+    /**
+     * Default to `DB`, taking direct connection to the usual `DB` from FatFree.
+     *
+     * @since 2.0.0
+     */
     public const CONFIG_DB = "db";
+
+    /**
+     * `path` configuration key.
+     *
+     * Path to your migration groups. Default to `migration/`
+     *
+     * @since 1.0.0
+     */
     public const CONFIG_MIGRATIONPATH = "path";
+
+    /**
+     * `prefix` configuration key.
+     *
+     * This will define the classname prefix or Namespace of the migration. For
+     * example, you can have a migration called
+     * `migration/20220401120100-AprilFoolsEvents.php` with the class name as
+     * `Mgr_AprilFoolsEvents`. The prefix will be `Migration\Mgr_`.
+     *
+     * Default to `Migration\\`.
+     *
+     * @since 1.0.0
+     */
     public const CONFIG_MIGRATIONPREFIX = "prefix";
+
+    /**
+     * `show_log` configuration key.
+     *
+     * Shows logs from current run to either a
+     * file or directly to the php output. Additionally,this will automatically
+     * set's header to text/plain when runned on non-cli environtment (php-cli).
+     *
+     * @since 1.1.0
+     */
     public const CONFIG_WEBLOG = "show_log";
+
+    /**
+     * `access_path` configuration key.
+     *
+     * This will define the url that can be used to trigger the migration.
+     * Default to `GET @ilgar: /ilgar/migrate`. We also set a default key just
+     * incase you want to set a special rule to this routing.
+     *
+     * @since 1.0.0
+     */
     public const CONFIG_ROUTE = "access_path";
+
+    /**
+     * `logger` configuration key.
+     *
+     * Bring your own loggger. We use PSRLogger-compatible class.
+     *
+     * Default to null. We'll create a new {@see Monolog\Logger} instance when
+     * we seee that the value of this key are falsy.
+     *
+     * @since 1.0.0
+     */
     public const CONFIG_LOGGER = "logger";
+
+    /**
+     * `no_exception` Configuration Key. This will make Ilgar handle the
+     * Exception from MigrationPackage. Ilgar will log things out and tells you
+     * where is the problem. Also this will make FatFree wont show any error
+     * report
+     *
+     * @deprecated This configuration are no-longger needed. Ilgar will treat
+     * any uncatched exception from migration as fatal error and will tell you
+     * by default if you set your logger level as debug.
+     *
+     * @since 1.1.0
+     */
+    public const CONFIG_NO_EXCEPTION = "no_exception";
 
     /**
      * Logger Internals
@@ -168,6 +245,7 @@ class Runner extends \Prefab implements RunnerContext
                     continue;
                 }
 
+                // run the migration
                 if (!$migration->run()) {
                     $log->warning(sprintf("Migration %s self-reports that it doesn't run properly.", $mig['name']));
                     throw new \RuntimeException(sprintf(
@@ -176,6 +254,7 @@ class Runner extends \Prefab implements RunnerContext
                     ));
                 }
 
+                // record the successfull migration to the db.
                 $dbUtil->addMigration($mig['name'], $mig['version'], $batch);
                 $migrationRan++;
                 $latestRanVersion = $mig['version'];
