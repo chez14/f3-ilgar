@@ -148,6 +148,7 @@ class Runner extends \Prefab implements RunnerContext
             self::CONFIG_MIGRATIONPATH => "migration/",
             self::CONFIG_MIGRATIONPREFIX => "Migration\\",
             self::CONFIG_WEBLOG => true,
+            self::CONFIG_LOGGER => null,
             self::CONFIG_ROUTE => "GET @ilgar: /ilgar/migrate",
             self::CONFIG_DB => $f3->get('DB'),
             self::CONFIG_TABLENAME => "migrations",
