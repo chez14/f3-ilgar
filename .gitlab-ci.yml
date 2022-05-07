@@ -16,7 +16,7 @@ Styling Check:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run style
 
-Compability Test:
+Unit Test:
   image: php:${PHP_VER}
   stage: test
   needs:
@@ -47,7 +47,7 @@ Publisher (Tag):
   rules:
     - if: '$CI_COMMIT_TAG == null && $CI_COMMIT_REF_PROTECTED == "true"'
   needs:
-    - "Compability Test"
+    - "Unit Test"
   script:
     - setup-ssh.sh
     - setup-git.sh
@@ -59,7 +59,7 @@ GitLab Release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   needs:
-    - "Compability Test"
+    - "Unit Test"
   rules:
     - if: $CI_COMMIT_TAG
   script:
@@ -71,12 +71,15 @@ GitLab Release:
     ref: $CI_COMMIT_TAG
 
 Documentation:
-  image: phpdoc/phpdoc:3
+  image: docker:latest
   stage: deploy
   variables:
       PUBLIC_URL: "/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public"
+  services:
+    - docker:dind
   script:
-    - vendor/bin/phpdoc
+    - docker pull phpdoc/phpdoc
+    - docker run --rm -v $(pwd):/data phpdoc/phpdoc
     - echo "Documentation published on https://${CI_PROJECT_NAMESPACE}.gitlab.io/-/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/public/index.html"
   environment:
       name: Docs
