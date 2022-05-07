@@ -79,7 +79,7 @@ Documentation:
     - docker:dind
   script:
     - docker pull phpdoc/phpdoc
-    - docker run --rm -v $(pwd):/data phpdoc/phpdoc
+    - docker run --rm -v $(pwd):/data phpdoc/phpdoc run
     - echo "Documentation published on https://${CI_PROJECT_NAMESPACE}.gitlab.io/-/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/public/index.html"
   environment:
       name: Docs
