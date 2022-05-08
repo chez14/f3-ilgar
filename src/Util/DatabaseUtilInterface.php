@@ -63,4 +63,11 @@ interface DatabaseUtilInterface
      * @return bool
      */
     public function hasTable(): bool;
+
+    /**
+     * Clean migration DB.
+     *
+     * @return void
+     */
+    public function resetMigration(): void;
 }
