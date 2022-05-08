@@ -26,7 +26,7 @@ class BasicTest extends TestCase
         }
 
         $this->f3 = \F3::instance();
-        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/../.test-files/packages-test-1/");
+        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/.test-files/packages-test-1/");
         $this->f3->set('ILGAR.show_log', false);
         $this->f3->set('QUIET', true);
         \CHEZ14\Ilgar\Boot::now();
@@ -35,6 +35,8 @@ class BasicTest extends TestCase
     /**
      * @test
      * @testdox Able to do simple migration
+     *
+     * @covers CHEZ14\Ilgar\Migration
      */
     public function testFirstStage()
     {
@@ -50,6 +52,7 @@ class BasicTest extends TestCase
      * @test
      * @testdox Able to prevent reinvoking the same migration package
      * @depends testFirstStage
+     * @covers CHEZ14\Ilgar\Migration
      */
     public function testSecondStage()
     {

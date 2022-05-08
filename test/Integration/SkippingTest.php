@@ -21,7 +21,7 @@ class SkippingTest extends TestCase
         }
 
         $this->f3 = \F3::instance();
-        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/../.test-files/packages-test-2/");
+        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/.test-files/packages-test-1/");
         $this->f3->set('ILGAR.show_log', false);
         $this->f3->set('QUIET', true);
         \CHEZ14\Ilgar\Boot::now();
@@ -29,6 +29,7 @@ class SkippingTest extends TestCase
 
     /**
      * @testdox Able to skip a migration package when is_migratable is false.
+     * @covers CHEZ14\Ilgar\Migration
      */
     public function testFirstStage()
     {
@@ -43,6 +44,7 @@ class SkippingTest extends TestCase
     /**
      * @testdox Able to skip a migration package even if it's haven't executed.
      * @depends testFirstStage
+     * @covers CHEZ14\Ilgar\Migration
      */
     public function testSecondStage()
     {
