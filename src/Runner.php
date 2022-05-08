@@ -288,12 +288,14 @@ class Runner extends \Prefab implements RunnerContext
         $m = [];
 
         foreach ($migrationDone as $migration) {
-            $m[$migrationDone['version']] = $migration;
+            array_push($m, $migration['version']);
         }
 
-        return array_filter($migrationList, function ($migration) use (&$m) {
-            return key_exists($migration['version'], $m);
+        $cleaned = array_filter($migrationList, function ($migration) use (&$m) {
+            return !in_array($migration['version'], $m);
         });
+
+        return array_values($cleaned);
     }
 
     /**
