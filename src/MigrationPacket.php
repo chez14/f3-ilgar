@@ -14,6 +14,15 @@ namespace CHEZ14\Ilgar;
 abstract class MigrationPacket extends Migration
 {
 
+    public function run(): bool
+    {
+        // Set the migratable to set the enabled thingy.
+        $this->enabled = $this->enabled && $this->is_migratable();
+
+        // Then run the migration as usual.
+        return parent::run();
+    }
+
     /**
      * Migration worker function.
      *
@@ -25,6 +34,7 @@ abstract class MigrationPacket extends Migration
             "This style of migration will be deprecated in future " .
                 "major release, please consult to documentation for more information."
         );
+
         // this function will supports older version of ilgar.
         $this->logger->info("Running Pre-migration event...");
         $this->pre_migrate();
@@ -59,9 +69,7 @@ abstract class MigrationPacket extends Migration
      * @see Migration::up()
      * @return void
      */
-    public function on_migrate()
-    {
-    }
+    abstract public function on_migrate();
 
     /**
      * Pre-migration event handler
@@ -104,7 +112,5 @@ abstract class MigrationPacket extends Migration
      * @param \Exception $e Error contexts
      * @return mixed
      */
-    public function on_failed(\Exception $e)
-    {
-    }
+    abstract public function on_failed(\Exception $e);
 }
