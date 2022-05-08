@@ -270,6 +270,7 @@ class Runner extends \Prefab implements RunnerContext
                     $dbUtil->addMigration($mig['name'], $mig['version'], $batch);
                     $migrationRan++;
                     $latestRanVersion = $mig['version'];
+                    $log->info(sprintf("Migration %s has run successfuly.", $mig['name']));
                 } else {
                     $log->warning(sprintf(
                         "Migration %s self-reports that it doesn't run properly or skipped. " .
