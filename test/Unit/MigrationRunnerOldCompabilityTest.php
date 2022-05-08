@@ -14,7 +14,7 @@ use RuntimeException;
  * MigrationRunnerOldCompabilityTest
  * @group Migration
  */
-class MigrationRunnerOldcompabilityTest extends TestCase
+class MigrationRunnerOldCompabilityTest extends TestCase
 {
     /**
      * Sets up the testing suite for this particular test.
