@@ -1,5 +1,8 @@
 <?php
 
+namespace CHEZ14\Ilgar\Test\Integration;
+
+use CHEZ14\Ilgar\Test\Utils\DBSetup;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,8 +14,14 @@ class SkippingTest extends TestCase
 
     protected function setUp(): void
     {
+        try {
+            DBSetup::setup();
+        } catch (\InvalidArgumentException $e) {
+            $this->markTestSkipped("Database is not set");
+        }
+
         $this->f3 = \F3::instance();
-        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/packages-test-2/");
+        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/../.test-files/packages-test-2/");
         $this->f3->set('ILGAR.show_log', false);
         $this->f3->set('QUIET', true);
         \CHEZ14\Ilgar\Boot::now();
