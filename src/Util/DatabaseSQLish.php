@@ -16,7 +16,19 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
     {
         $this->internalDB = $db;
         $this->runner = $runner;
-        $this->cursor = new Mapper($db, $runner->getConfig(Runner::CONFIG_TABLENAME));
+        $this->recreateCursor();
+    }
+
+    /**
+     * Recreate cursor wuth
+     *
+     * @return void
+     */
+    protected function recreateCursor()
+    {
+        // This will recreate the mapper object to refresh the fields internal.
+        // Should be triggered whenever the DB is reset.
+        $this->cursor = new Mapper($this->internalDB, $this->runner->getConfig(Runner::CONFIG_TABLENAME));
     }
 
     /**
@@ -135,6 +147,7 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
                 $this->runner->getConfig(Runner::CONFIG_TABLENAME)
             )
         );
+        $this->recreateCursor();
     }
 
     /**
