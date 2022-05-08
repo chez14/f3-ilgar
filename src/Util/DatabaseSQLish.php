@@ -4,6 +4,7 @@ namespace CHEZ14\Ilgar\Util;
 
 use CHEZ14\Ilgar\Runner;
 use DB\SQL\Mapper;
+use PDOException;
 
 class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
 {
@@ -16,6 +17,11 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
     {
         $this->internalDB = $db;
         $this->runner = $runner;
+
+        if (!$this->hasTable()) {
+            $this->createTable(false);
+        }
+
         $this->recreateCursor();
     }
 
@@ -129,9 +135,10 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
     /**
      * Create Migration Repo Table
      *
+     * @param bool $refreshCursor Refresh the cursor mapper.
      * @return void
      */
-    public function createTable(): void
+    public function createTable(bool $refreshCursor = true): void
     {
         $this->internalDB->exec(
             sprintf(
@@ -147,7 +154,9 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
                 $this->runner->getConfig(Runner::CONFIG_TABLENAME)
             )
         );
-        $this->recreateCursor();
+        if ($refreshCursor) {
+            $this->recreateCursor();
+        }
     }
 
     /**
@@ -157,10 +166,14 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function hasTable(): bool
     {
-        $tableSchemas = ($this->internalDB->schema(
-            $this->runner->getConfig(Runner::CONFIG_TABLENAME)
-        ));
-        return !empty($tableSchemas);
+        try {
+            $tableSchemas = ($this->internalDB->schema(
+                $this->runner->getConfig(Runner::CONFIG_TABLENAME)
+            ));
+            return !empty($tableSchemas);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 
     /**

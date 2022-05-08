@@ -117,9 +117,10 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     /**
      * Create Migration Repo Table
      *
+     * @param bool $refreshCursor Refresh the cursor mapper.
      * @return void
      */
-    public function createTable(): void
+    public function createTable(bool $refreshCursor = true): void
     {
         // Afaik we don't have to create table for this. Mogno will
         // automatically create a new one from first inserted item.

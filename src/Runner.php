@@ -209,12 +209,6 @@ class Runner extends \Prefab implements RunnerContext
 
         $log = $this->getLogger('runner');
 
-        // Create table when we can't detect them
-        if (!$dbUtil->hasTable()) {
-            $log->info("Migration table has not been created yet. We'll create one.");
-            $dbUtil->createTable();
-        }
-
         $migrationsDone = $dbUtil->getMigrations();
         $migrationsToCheck = $this->scanMigrationFolder();
 

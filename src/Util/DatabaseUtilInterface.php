@@ -53,9 +53,10 @@ interface DatabaseUtilInterface
     /**
      * Create Migration Repo Table
      *
+     * @param bool $refreshCursor Refresh the cursor mapper.
      * @return void
      */
-    public function createTable(): void;
+    public function createTable(bool $refreshCursor = true): void;
 
     /**
      * Checks if Table has been made.
