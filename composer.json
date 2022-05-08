@@ -28,7 +28,8 @@
         "psr/log": "^1.1"
     },
     "suggest": {
-        "monolog/monolog": "Allows more advanced logging of the application flow"
+        "monolog/monolog": "Allows more advanced logging of the application flow",
+        "mongodb/mongodb": "Enable the MongoDB Support for your project"
     },
     "autoload": {
         "psr-4": {

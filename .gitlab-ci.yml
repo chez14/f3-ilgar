@@ -126,6 +126,7 @@ Mongo Integration Test:
     - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+    - composer require mongodb/mongodb --no-ansi --no-interaction --no-progress
     - composer run test -- --log-junit report.xml
   artifacts:
     when: always
