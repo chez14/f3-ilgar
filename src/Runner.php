@@ -168,7 +168,7 @@ class Runner extends \Prefab implements RunnerContext
             }
 
             $file = "php://output";
-            $logger->pushHandler(new StreamHandler($file, Logger::INFO));
+            $config[self::CONFIG_LOGGER]->pushHandler(new StreamHandler($file, Logger::INFO));
         }
 
         // Update the config to our internals
@@ -233,17 +233,33 @@ class Runner extends \Prefab implements RunnerContext
         // Variables for reporting
         $migrationRan = 0;
         $failed = null;
-        $latestRanVersion = null;
+        $latestRanVersion = $dbUtil->getLatestVersion();
         try {
             foreach ($migrationTodo as $mig) {
                 $log->info(sprintf("Running %s...", $mig['name']));
 
                 // Include and create new intance of the newly included class.
-                require($mig['filename']);
-                $mig = new $mig['name']($this);
+                require_once($mig['path']);
+                $migration = new $mig['name']($this);
 
-                if (!($mig instanceof MigrationInterface)) {
-                    $log->warning(sprintf("File %s are not child of MigrationInterface. Skipping..."));
+                if (!$migration) {
+                    $log->warning(
+                        sprintf(
+                            "Failed to create an instance of %s from %s file.",
+                            $mig['name'],
+                            $mig['filename']
+                        )
+                    );
+                    continue;
+                }
+
+                if (!($migration instanceof MigrationInterface)) {
+                    $log->warning(
+                        sprintf(
+                            "File %s are not child of MigrationInterface. Skipping...",
+                            $mig['filename']
+                        )
+                    );
                     continue;
                 }
 
@@ -262,7 +278,7 @@ class Runner extends \Prefab implements RunnerContext
                 $latestRanVersion = $mig['version'];
             }
             $log->info(sprintf("Runner has run %d migration(s) successfully.", $migrationRan));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $log->critical(sprintf("Runner has encountered an error: %s.", $e->getMessage()));
             $log->debug("Here's the trace");
             $log->debug($e->getTraceAsString());
@@ -372,6 +388,8 @@ class Runner extends \Prefab implements RunnerContext
      */
     public function resetVersion(): void
     {
+        $db = DatabaseFactory::createFrom($this->getConfig(self::CONFIG_DB), $this);
+        $db->resetMigration();
     }
 
     /**
@@ -410,7 +428,7 @@ class Runner extends \Prefab implements RunnerContext
      */
     public function getStats(): array
     {
-        return $this->stat;
+        return $this->stats;
     }
 
     /**
