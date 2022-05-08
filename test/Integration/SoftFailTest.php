@@ -21,15 +21,16 @@ class SoftFailTest extends TestCase
         }
 
         $this->f3 = \F3::instance();
-        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/.test-files/packages-test-1/");
+        $this->f3->set('ILGAR.path', dirname(__DIR__) . "/.test-files/packages-test-3/");
         $this->f3->set('ILGAR.show_log', false);
-        $this->f3->set('QUIET', true);
         \CHEZ14\Ilgar\Boot::now();
     }
 
     /**
+     * @test
      * @testdox Able to handle soft fail
      * @covers CHEZ14\Ilgar\Migration
+     *
      */
     public function testFirstStage()
     {
@@ -39,6 +40,8 @@ class SoftFailTest extends TestCase
         $stats = \CHEZ14\Ilgar\Runner::instance()->getStats();
         $this->assertSame(1, $stats['version']);
         $this->assertSame(1, $stats['success']);
-        $this->assertNotNull($stats['last_exception']);
+
+        // Soft fail should not throw exception now.
+        $this->assertNull($stats['last_exception']);
     }
 }
