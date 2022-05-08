@@ -102,7 +102,6 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function getLatestVersion(): int
     {
-
         $versions = $this->cursor->select("version", null, [
             "order" => "version desc",
             "limit" => 1
