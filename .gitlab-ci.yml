@@ -21,14 +21,18 @@ Unit Test:
   stage: test
   needs:
     - "Styling Check"
-  services:
-    - mysql:latest
+  variables:
+    db: "sqllike"
+    db_dsn: "sqlite:./db.sqlite"
+    db_username: ""
+    db_password: ""
   before_script:
     - apk update
     - apk add zip unzip
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
+    - ext-
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run test -- --log-junit report.xml
@@ -39,6 +43,92 @@ Unit Test:
     when: always
     reports:
       junit: report.xml
+
+# MySQL Integration Test:
+#   image: php:8
+#   stage: test
+#   needs:
+#     - "Unit Test"
+#   services:
+#     - mysql:latest
+#   variables:
+#     MYSQL_ROOT_PASSWORD: "baccano"
+#     MYSQL_DATABASE: "f3ilgar"
+#     db: "sqllike"
+#     db_dsn: "mysql:host=mysql;port=3306;dbname=f3ilgar"
+#     db_username: "root"
+#     db_password: "baccano"
+#   before_script:
+#     - apk update
+#     - apk add zip unzip
+#     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+#     - php -r "unlink('composer-setup.php');"
+#   script:
+#     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+#     - composer run test -- --log-junit report.xml
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: report.xml
+
+# Postgre Integration Test:
+#   image: php:8
+#   stage: test
+#   needs:
+#     - "Unit Test"
+#   services:
+#     - postgresql:latest
+#   variables:
+#     POSTGRES_PASSWORD: "baccano"
+#     POSTGRES_DB: "f3ilgar"
+#     db: "sqllike"
+#     db_dsn: "pgsql:host=postgresql;port=5432;dbname=f3ilgar"
+#     db_username: "postgres"
+#     db_password: "baccano"
+#   before_script:
+#     - apk update
+#     - apk add zip unzip
+#     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+#     - php -r "unlink('composer-setup.php');"
+#     - apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pdo pdo_pgsql
+#   script:
+#     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+#     - composer run test -- --log-junit report.xml
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: report.xml
+
+# Mongo Integration Test:
+#   image: php:8
+#   stage: test
+#   needs:
+#     - "Unit Test"
+#   services:
+#     - mongo:latest
+#   variables:
+#     MONGO_INITDB_ROOT_USERNAME: "root"
+#     MONGO_INITDB_ROOT_PASSWORD: "baccano"
+#     MONGO_INITDB_DATABASE: "f3ilgar"
+#     db: "mongo"
+#     db_dsn: "mongodb://mongo:27017"
+#     db_username: "root"
+#     db_password: "baccano"
+#   before_script:
+#     - apk update
+#     - apk add zip unzip
+#     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+#     - php -r "unlink('composer-setup.php');"
+#   script:
+#     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+#     - composer run test -- --log-junit report.xml
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: report.xml
 
 Publisher (Tag):
   stage: deploy
@@ -74,7 +164,7 @@ Documentation:
   image: docker:latest
   stage: deploy
   variables:
-      PUBLIC_URL: "/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public"
+    PUBLIC_URL: "/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public"
   services:
     - docker:dind
   script:
@@ -82,8 +172,8 @@ Documentation:
     - docker run --rm -v $(pwd):/data phpdoc/phpdoc run
     - echo "Documentation published on https://${CI_PROJECT_NAMESPACE}.gitlab.io/-/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/public/index.html"
   environment:
-      name: Docs
-      url: "https://$CI_PROJECT_NAMESPACE.gitlab.io/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
+    name: Docs
+    url: "https://$CI_PROJECT_NAMESPACE.gitlab.io/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/public/index.html"
   artifacts:
-      paths:
-        - public
+    paths:
+      - public

@@ -2,7 +2,7 @@
 
 namespace CHEZ14\Ilgar\Test\Utils;
 
-use Base;
+use F3;
 
 class DBSetup
 {
@@ -16,7 +16,7 @@ class DBSetup
         // check for DB.
         $db = null;
         if ($_ENV['db'] == "sqllike") {
-            $db = new \DB\SQL($_ENV['db_dsn'], $_ENV['db_username'], $_ENV['db_password']);
+            $db = new \DB\SQL($_ENV['db_dsn'], $_ENV['db_username'] ?? "", $_ENV['db_password'] ?? "");
         } elseif ($_ENV['db'] == "mongo") {
             $db = new \DB\Mongo($_ENV['db_dsn'], $_ENV['db_table']);
         }
@@ -25,6 +25,7 @@ class DBSetup
             throw new \InvalidArgumentException("Database is not set.");
         }
 
-        Base::instance()->set('DB', $db);
+        F3::instance()->set('DB', $db);
+        F3::instance()->set('ILGAR.db', $db);
     }
 }

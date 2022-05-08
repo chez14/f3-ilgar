@@ -1,0 +1,2 @@
+db=sqllike
+db_dsn="sqlite:./db.sqlite"

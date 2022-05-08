@@ -4,7 +4,7 @@
 
 /.phpdoc/
 /public/
-
+.env
 ##### Windows
 # Windows thumbnail cache files
 Thumbs.db
@@ -479,3 +479,4 @@ composer.lock
 *.css.map
 *.sass.map
 *.scss.map
+db.sqlite
