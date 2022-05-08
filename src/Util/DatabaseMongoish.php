@@ -144,6 +144,8 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
      */
     public function resetMigration(): void
     {
-        $this->cursor->erase(['1']);
+        if ($this->hasTable()) {
+            $this->internalDB->drop();
+        }
     }
 }

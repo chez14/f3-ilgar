@@ -58,7 +58,7 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function getMigrations(): array
     {
-        $migrations = $this->cursor->find([], [
+        $migrations = $this->cursor->select('name, version, batch, migrated_on', null, [
             "order" => "version asc"
         ]);
         return $migrations;
@@ -147,7 +147,7 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
         $tableSchemas = ($this->internalDB->schema(
             $this->runner->getConfig(Runner::CONFIG_TABLENAME)
         ));
-        return !empty($tableSchemas) && $tableSchemas !== false;
+        return !empty($tableSchemas);
     }
 
     /**
@@ -157,6 +157,8 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function resetMigration(): void
     {
-        $this->cursor->erase(['1']);
+        if ($this->hasTable()) {
+            $this->internalDB->exec(sprintf("drop table %s", $this->runner->getConfig(Runner::CONFIG_TABLENAME)));
+        }
     }
 }
