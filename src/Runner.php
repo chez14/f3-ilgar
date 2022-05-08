@@ -211,6 +211,7 @@ class Runner extends \Prefab implements RunnerContext
 
         // Create table when we can't detect them
         if (!$dbUtil->hasTable()) {
+            $log->info("Migration table has not been created yet. We'll create one.");
             $dbUtil->createTable();
         }
 
@@ -272,7 +273,7 @@ class Runner extends \Prefab implements RunnerContext
                 } else {
                     $log->warning(sprintf(
                         "Migration %s self-reports that it doesn't run properly or skipped. " .
-                        "This will keep continue running the migration.",
+                            "This will keep continue running the migration.",
                         $mig['name']
                     ));
                 }
