@@ -13,7 +13,7 @@ class Softfail extends \CHEZ14\Ilgar\Migration
     {
     }
 
-    public function down(\Exception $e): void
+    public function down(?\Exception $e): void
     {
     }
 }

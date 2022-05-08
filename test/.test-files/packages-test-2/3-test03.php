@@ -9,7 +9,7 @@ class Test03 extends \CHEZ14\Ilgar\Migration
         echo "Hello from Test02 Migration package";
     }
 
-    public function down(\Exception $e): void
+    public function down(?\Exception $e): void
     {
     }
 }

@@ -9,7 +9,7 @@ class Hardfail extends \CHEZ14\Ilgar\Migration
         throw new \Exception('Hard fail!');
     }
 
-    public function down(\Exception $e): void
+    public function down(?\Exception $e): void
     {
     }
 }
