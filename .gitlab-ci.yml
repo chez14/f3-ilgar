@@ -63,7 +63,7 @@ MySQL Integration Test:
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
-    - docker-php-ext-install pdo_mysql
+    - docker-php-ext-install pdo pdo_mysql
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run test -- --log-junit report.xml
@@ -92,7 +92,7 @@ Postgre Integration Test:
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
-    - apt-get update && apt-get install -y libpq-dev && docker-php-ext-install pdo pdo_pgsql
+    - apk update && apk install libpq-dev && docker-php-ext-install pdo pdo_pgsql
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run test -- --log-junit report.xml
