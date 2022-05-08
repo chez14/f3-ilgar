@@ -264,18 +264,18 @@ class Runner extends \Prefab implements RunnerContext
                 }
 
                 // run the migration
-                if (!$migration->run()) {
-                    $log->warning(sprintf("Migration %s self-reports that it doesn't run properly.", $mig['name']));
-                    throw new \RuntimeException(sprintf(
-                        "Migration %s self-reports that it doesn't run properly.",
+                if ($migration->run()) {
+                    // record the successfull migration to the db.
+                    $dbUtil->addMigration($mig['name'], $mig['version'], $batch);
+                    $migrationRan++;
+                    $latestRanVersion = $mig['version'];
+                } else {
+                    $log->warning(sprintf(
+                        "Migration %s self-reports that it doesn't run properly or skipped. " .
+                        "This will keep continue running the migration.",
                         $mig['name']
                     ));
                 }
-
-                // record the successfull migration to the db.
-                $dbUtil->addMigration($mig['name'], $mig['version'], $batch);
-                $migrationRan++;
-                $latestRanVersion = $mig['version'];
             }
             $log->info(sprintf("Runner has run %d migration(s) successfully.", $migrationRan));
         } catch (\Throwable $e) {
