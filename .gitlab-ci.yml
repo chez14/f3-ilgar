@@ -77,7 +77,7 @@ Postgre Integration Test:
   needs:
     - "Unit Test"
   services:
-    - postgresql:latest
+    - postgres:latest
   variables:
     POSTGRES_PASSWORD: "baccano"
     POSTGRES_DB: "f3ilgar"
@@ -121,8 +121,8 @@ Mongo Integration Test:
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
-    - pecl install mongodb-1.6.0
-    - docker-php-ext-enable /usr/local/lib/php/extensions/no-debug-non-zts-20180731/mongodb.so
+    - pecl install mongodb
+    - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run test -- --log-junit report.xml
