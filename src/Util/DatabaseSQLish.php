@@ -58,9 +58,10 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function getMigrations(): array
     {
-        return $this->cursor->find(['1'], [
+        $migrations = $this->cursor->find([], [
             "order" => "version asc"
         ]);
+        return $migrations;
     }
 
     /**
@@ -84,12 +85,14 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function addMigration(string $className, int $version, int $batchNumber): void
     {
-        $this->cursor->insert([
+        $this->cursor->reset();
+        $this->cursor->copyfrom([
             "name" => $className,
             "version" => $version,
             "batch" => $batchNumber,
             "migrated_on" => date("Y-m-d H:i:s")
         ]);
+        $this->cursor->insert();
     }
 
     /**
@@ -99,10 +102,17 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function getLatestVersion(): int
     {
-        return $this->cursor->findone("version", null, [
+
+        $versions = $this->cursor->select("version", null, [
             "order" => "version desc",
             "limit" => 1
         ]);
+
+        if (!$versions) {
+            return -1;
+        }
+
+        return $versions[0]['version'];
     }
 
     /**
@@ -139,5 +149,15 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
             $this->runner->getConfig(Runner::CONFIG_TABLENAME)
         ));
         return !empty($tableSchemas) && $tableSchemas !== false;
+    }
+
+    /**
+     * Clean migration DB.
+     *
+     * @return void
+     */
+    public function resetMigration(): void
+    {
+        $this->cursor->erase(['1']);
     }
 }
