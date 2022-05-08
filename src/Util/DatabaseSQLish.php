@@ -58,7 +58,7 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function getMigrations(): array
     {
-        return $this->cursor->find(null, [
+        return $this->cursor->find(['1'], [
             "order" => "version asc"
         ]);
     }
@@ -112,28 +112,32 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function createTable(): void
     {
-        $this->internalDB->exec(join(" ", [
-            "CREATE TABLE :tablename (",
-            "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT",
-            "name VARCHAR(128) NOT NULL",
-            "version INTEGER NOT NULL",
-            "migrated_on DATETIME NOT NULL",
-            "batch INT NOT NULL",
-            ")"
-        ]), [
-            ":tablename" => $this->runner->getConfig(Runner::CONFIG_TABLENAME)
-        ]);
+        $this->internalDB->exec(
+            sprintf(
+                join(" ", [
+                    "CREATE TABLE %s (",
+                    "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,",
+                    "name TEXT NOT NULL,",
+                    "version INTEGER NOT NULL,",
+                    "migrated_on DATETIME NOT NULL,",
+                    "batch INT NOT NULL",
+                    ")"
+                ]),
+                $this->runner->getConfig(Runner::CONFIG_TABLENAME)
+            )
+        );
     }
 
     /**
      * Checks if Table has been made.
      *
-     * @return void
+     * @return bool
      */
     public function hasTable(): bool
     {
-        return !($this->internalDB->schema(
+        $tableSchemas = ($this->internalDB->schema(
             $this->runner->getConfig(Runner::CONFIG_TABLENAME)
-        ) === false);
+        ));
+        return !empty($tableSchemas) && $tableSchemas !== false;
     }
 }
