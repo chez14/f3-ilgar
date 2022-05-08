@@ -423,7 +423,7 @@ class Runner extends \Prefab implements RunnerContext
      *
      * @since 1.0.0
      * @deprecated This function will be deprecated in next major release, use
-     * {@see Runner::getCurrentVersion()} instead.
+     * {@see Runner::getStats()} instead.
      * @return array
      */
     public function get_stats(): array // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
