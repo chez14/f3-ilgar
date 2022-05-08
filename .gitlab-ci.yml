@@ -113,9 +113,8 @@ Mongo Integration Test:
     MONGO_INITDB_ROOT_PASSWORD: "baccano"
     MONGO_INITDB_DATABASE: "f3ilgar"
     db: "mongo"
-    db_dsn: "mongodb://mongo:27017"
-    db_username: "root"
-    db_password: "baccano"
+    db_dsn: "mongodb://root:baccano@mongo:27017"
+    db_table: "f3ilgar"
   before_script:
     - apk update
     - apk add zip unzip
