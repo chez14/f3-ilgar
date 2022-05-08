@@ -2,6 +2,7 @@
   <testsuites>
     <testsuite name="default">
       <directory>test/Unit</directory>
+      <directory>test/Integration</directory>
     </testsuite>
   </testsuites>
   <coverage cacheDirectory=".phpunit.cache/code-coverage" processUncoveredFiles="true">
