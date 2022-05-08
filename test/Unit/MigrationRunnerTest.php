@@ -46,6 +46,7 @@ class MigrationRunnerTest extends TestCase
      *
      * @covers CHEZ14\Ilgar\Migration
      *
+     * @return void
      * */
     public function migrationClassProperlyCallsUp()
     {
@@ -63,6 +64,8 @@ class MigrationRunnerTest extends TestCase
      * Migration Class Expected to invoke `up()` when triggered by `run()`.
      *
      * @covers CHEZ14\Ilgar\Migration
+     *
+     * @return void
      * */
     public function migrationClassProperlyNotCallsUpOnDisable()
     {
@@ -87,6 +90,8 @@ class MigrationRunnerTest extends TestCase
      * Migration Class Expected to invoke `up()` when triggered by `run()`.
      *
      * @covers CHEZ14\Ilgar\Migration
+     *
+     * @return void
      * */
     public function migrationClassProperlyHandleException()
     {

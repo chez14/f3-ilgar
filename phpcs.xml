@@ -3,4 +3,5 @@
     <description>F3 Ilgar's code style</description>
     <config name="installed_paths" value="vendor/chez14/phpcs/src/CHEZ14Standards"/>
     <rule ref="CHEZ14Standards"></rule>
+    <exclude-pattern type="relative">^/vendor/*</exclude-pattern>
 </ruleset>

@@ -34,6 +34,8 @@ class SkippableMigrationClassTest extends TestCase
      *
      * @dataProvider migrationTestCaseDataProvider
      * @covers CHEZ14\Ilgar\Runner::cleanMigration
+     *
+     * @return void
      */
     public function updateFromScratch($existingMigration, $migratableMigration, $expectation)
     {
