@@ -83,7 +83,7 @@ Postgre Integration Test:
     POSTGRES_PASSWORD: "baccano"
     POSTGRES_DB: "f3ilgar"
     db: "sqllike"
-    db_dsn: "pgsql:host=postgresql;port=5432;dbname=f3ilgar"
+    db_dsn: "pgsql:host=postgres;port=5432;dbname=f3ilgar"
     db_username: "postgres"
     db_password: "baccano"
   before_script:
@@ -122,7 +122,7 @@ Mongo Integration Test:
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
-    - apk add --no-cache --update --virtual buildDeps autoconf
+    - apk add --no-cache --update --virtual buildDeps autoconf gcc make g++ zlib-dev
     - pecl install mongodb
     - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   script:
