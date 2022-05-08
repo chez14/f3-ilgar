@@ -44,7 +44,7 @@ Unit Test:
       junit: report.xml
 
 MySQL Integration Test:
-  image: php:8
+  image: php:8-alpine
   stage: test
   needs:
     - "Unit Test"
@@ -72,7 +72,7 @@ MySQL Integration Test:
       junit: report.xml
 
 Postgre Integration Test:
-  image: php:8
+  image: php:8-alpine
   stage: test
   needs:
     - "Unit Test"
@@ -101,7 +101,7 @@ Postgre Integration Test:
       junit: report.xml
 
 Mongo Integration Test:
-  image: php:8
+  image: php:8-alpine
   stage: test
   needs:
     - "Unit Test"
