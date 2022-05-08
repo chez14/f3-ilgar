@@ -92,7 +92,7 @@ Postgre Integration Test:
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
-    - apk update && apk install libpq-dev && docker-php-ext-install pdo pdo_pgsql
+    - apk update && apk add libpq-dev && docker-php-ext-install pdo pdo_pgsql
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer run test -- --log-junit report.xml
@@ -122,6 +122,7 @@ Mongo Integration Test:
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
     - php -r "unlink('composer-setup.php');"
+    - apk add --no-cache --update --virtual buildDeps autoconf
     - pecl install mongodb
     - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   script:
