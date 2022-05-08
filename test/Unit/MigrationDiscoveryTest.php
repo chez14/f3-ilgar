@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  *
  * Making sure things we load the correct file.
  *
- * @group Discovery
+ * @group Runners
  */
 class MigrationDiscoveryTest extends TestCase
 {
@@ -41,7 +41,6 @@ class MigrationDiscoveryTest extends TestCase
         // Trigger the setup sequence
         \CHEZ14\Ilgar\Boot::now();
 
-        // if (!$this->initialized) {
         $isFile = $this->getFunctionMock($this->runnerNamespace, "is_file");
         $isFile->expects($this->any())->willReturn(true);
         $basename = $this->getFunctionMock($this->runnerNamespace, "basename");
@@ -50,8 +49,6 @@ class MigrationDiscoveryTest extends TestCase
                 return $file;
             }
         );
-        // $this->initialized = true;
-        // }
     }
 
 
