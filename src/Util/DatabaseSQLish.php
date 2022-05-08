@@ -140,18 +140,26 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function createTable(bool $refreshCursor = true): void
     {
+        $autoincrement = "INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT";
+        if (preg_match('/sqlite/i', $this->internalDB->driver())) {
+            $autoincrement = "INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT";
+        } elseif (preg_match('/pgsql/i', $this->internalDB->driver())) {
+            $autoincrement = "SERIAL PRIMARY KEY";
+        }
+
         $this->internalDB->exec(
             sprintf(
                 join(" ", [
                     "CREATE TABLE %s (",
-                    "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,",
+                    "id %s,",
                     "name TEXT NOT NULL,",
                     "version INTEGER NOT NULL,",
                     "migrated_on DATETIME NOT NULL,",
                     "batch INT NOT NULL",
                     ")"
                 ]),
-                $this->runner->getConfig(Runner::CONFIG_TABLENAME)
+                $this->runner->getConfig(Runner::CONFIG_TABLENAME),
+                $autoincrement
             )
         );
         if ($refreshCursor) {
