@@ -25,8 +25,10 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.1",
-        "monolog/monolog": "^1.23",
         "psr/log": "^1.1"
+    },
+    "suggest": {
+        "monolog/monolog": "Allows more advanced logging of the application flow"
     },
     "autoload": {
         "psr-4": {
@@ -39,11 +41,13 @@
         }
     },
     "require-dev": {
-        "bcosca/fatfree-core": "^3.6",
+        "bcosca/fatfree-core": "^3.5",
         "chez14/phpcs": "^1.0",
         "squizlabs/php_codesniffer": "^3.6",
         "phpunit/phpunit": "^9.5",
-        "php-mock/php-mock-phpunit": "^2.6"
+        "php-mock/php-mock-phpunit": "^2.6",
+        "monolog/monolog": "^1.23",
+        "vlucas/phpdotenv": "^5.4"
     },
     "scripts": {
         "style": "phpcs src/",
