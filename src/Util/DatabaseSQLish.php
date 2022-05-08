@@ -147,6 +147,11 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
             $autoincrement = "SERIAL PRIMARY KEY";
         }
 
+        $datetime = "DATETIME";
+        if (preg_match('/pgsql/i', $this->internalDB->driver())) {
+            $datetime = "TIME";
+        }
+
         $this->internalDB->exec(
             sprintf(
                 join(" ", [
@@ -154,12 +159,13 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
                     "id %s,",
                     "name TEXT NOT NULL,",
                     "version INTEGER NOT NULL,",
-                    "migrated_on DATETIME NOT NULL,",
+                    "migrated_on %s NOT NULL,",
                     "batch INT NOT NULL",
                     ")"
                 ]),
                 $this->runner->getConfig(Runner::CONFIG_TABLENAME),
-                $autoincrement
+                $autoincrement,
+                $datetime
             )
         );
         if ($refreshCursor) {
