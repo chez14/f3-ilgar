@@ -1,0 +1,17 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+    volumes:
+      - ./:/app
+    links:
+      - db
+    env_file:
+      - .env
+  db:
+    image: mongo:latest
+    volumes:
+      - ./.infra/mongo:/etc/mongo
+    env_file:
+      - .env

@@ -1,2 +1,11 @@
+## Default SQLLite
 db=sqllike
 db_dsn="sqlite:./db.sqlite"
+
+## For Mongo!
+MONGO_INITDB_ROOT_USERNAME="root"
+MONGO_INITDB_ROOT_PASSWORD="baccano"
+MONGO_INITDB_DATABASE="f3ilgar"
+db="mongo"
+db_dsn="mongodb://root:baccano@db:27017"
+db_table="f3ilgar"
