@@ -39,8 +39,8 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     public function getLatestBatch(): int
     {
         $batch = $this->cursor->select("batch", null, [
-            "group" => "batch",
-            "order" => "batch desc",
+            "\$group" => "batch",
+            "order" => ["batch" => -1],
             "limit" => 1
         ]);
 
@@ -59,7 +59,7 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     public function getMigrations(): array
     {
         $migrations = $this->cursor->find([], [
-            "order" => "version asc"
+            "order" => ["version" => -1]
         ]);
         return $migrations;
     }
@@ -103,7 +103,7 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     public function getLatestVersion(): int
     {
         $versions = $this->cursor->select("version", null, [
-            "order" => "version desc",
+            "order" => ["version" => -1],
             "limit" => 1
         ]);
 
