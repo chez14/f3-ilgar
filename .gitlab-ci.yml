@@ -123,6 +123,7 @@ Mongo Integration Test:
     - php -r "unlink('composer-setup.php');"
     - apk add --no-cache --update --virtual buildDeps autoconf gcc make g++ zlib-dev
     - pecl install mongodb
+    - cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
     - echo "extension=mongodb.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress

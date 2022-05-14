@@ -15,10 +15,10 @@ class DBSetup
     {
         // check for DB.
         $db = null;
-        if ($_ENV['db'] == "sqllike") {
-            $db = new \DB\SQL($_ENV['db_dsn'], $_ENV['db_username'] ?? "", $_ENV['db_password'] ?? "");
-        } elseif ($_ENV['db'] == "mongo") {
-            $db = new \DB\Mongo($_ENV['db_dsn'], $_ENV['db_table']);
+        if (getenv('db') == "sqllike") {
+            $db = new \DB\SQL(getenv('db_dsn'), getenv('db_username') ?? "", getenv('db_password') ?? "");
+        } elseif (getenv('db') == "mongo") {
+            $db = new \DB\Mongo(getenv('db_dsn'), getenv('db_table'));
         }
 
         if (!$db) {
