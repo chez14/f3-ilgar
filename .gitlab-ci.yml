@@ -159,11 +159,15 @@ GitLab Release:
     - "Unit Test"
   rules:
     - if: $CI_COMMIT_TAG
+  services:
+    - docker:dind
   script:
-    - echo "Running the release job."
+    # Generate CHANGELOG.
+    - docker pull quay.io/git-chglog/git-chglog:latest
+    - export CHANGELOG=$(docker run -v "$PWD":/workdir quay.io/git-chglog/git-chglog $CI_COMMIT_TAG)
   release:
     name: "Release $CI_COMMIT_TAG"
-    description: "Release created using the release-cli."
+    description: $CHANGELOG
     tag_name: $CI_COMMIT_TAG
     ref: $CI_COMMIT_TAG
 
