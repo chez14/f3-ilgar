@@ -1,7 +1,5 @@
-/data/migration.json
-/data/log.log
 .phpunit.cache/test-results
-
+/.infra/
 /.phpdoc/
 /public/
 .env
