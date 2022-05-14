@@ -142,7 +142,8 @@ class Runner extends \Prefab implements RunnerContext
     public function setupConfig($updateToF3 = true)
     {
         $f3 = \Base::instance();
-        $setting = $f3->get('ILGAR');
+        $setting = $f3->get('ILGAR') ?? [];
+
         // This are default configurations
         $config = [
             self::CONFIG_MIGRATIONPATH => "migration/",
