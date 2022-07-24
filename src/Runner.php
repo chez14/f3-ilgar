@@ -37,6 +37,14 @@ class Runner extends \Prefab implements RunnerContext
     public const CONFIG_DB = "db";
 
     /**
+     * Disable ob flushing for more responsive output. This will make sure any
+     * logs will be outputted directly. Defaults to `true`.
+     *
+     * @since 2.0.0
+     */
+    public const CONFIG_DISABLE_OB = "disable_ob";
+
+    /**
      * `path` configuration key.
      *
      * Path to your migration groups. Default to `migration/`
@@ -153,6 +161,7 @@ class Runner extends \Prefab implements RunnerContext
             self::CONFIG_ROUTE => "GET @ilgar: /ilgar/migrate",
             self::CONFIG_DB => $f3->get('DB'),
             self::CONFIG_TABLENAME => "migrations",
+            self::CONFIG_DISABLE_OB => true,
         ];
 
         $config = array_merge($config, $setting);
@@ -170,6 +179,17 @@ class Runner extends \Prefab implements RunnerContext
 
             $file = "php://output";
             $config[self::CONFIG_LOGGER]->pushHandler(new StreamHandler($file, Logger::INFO));
+        }
+
+        if ($config[self::CONFIG_DISABLE_OB]) {
+            // From https://stackoverflow.com/a/49190570/4721245
+            // disable output buffering
+            while (ob_get_level()) {
+                ob_end_flush();
+            }
+
+            // turn implicit flush
+            ob_implicit_flush(1);
         }
 
         // Update the config to our internals
