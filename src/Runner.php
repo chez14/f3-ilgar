@@ -189,6 +189,10 @@ class Runner extends \Prefab implements RunnerContext
             }
 
             $file = "php://output";
+            if (php_sapi_name() === 'cli' && $config[self::CONFIG_DISABLE_OB]) {
+                $file = "php://stdout";
+            }
+
             $config[self::CONFIG_LOGGER]->pushHandler(new StreamHandler($file, Logger::INFO));
         }
 
