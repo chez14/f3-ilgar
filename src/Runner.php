@@ -166,6 +166,17 @@ class Runner extends \Prefab implements RunnerContext
 
         $config = array_merge($config, $setting);
 
+        if ($config[self::CONFIG_DISABLE_OB]) {
+            // From https://stackoverflow.com/a/49190570/4721245
+            // disable output buffering
+            while (ob_get_level()) {
+                ob_end_flush();
+            }
+
+            // turn implicit flush
+            ob_implicit_flush(1);
+        }
+
         if (!$config[self::CONFIG_LOGGER]) {
             $logger = new Logger('migration');
             $logger->pushHandler(new \Monolog\Handler\NullHandler());
@@ -179,17 +190,6 @@ class Runner extends \Prefab implements RunnerContext
 
             $file = "php://output";
             $config[self::CONFIG_LOGGER]->pushHandler(new StreamHandler($file, Logger::INFO));
-        }
-
-        if ($config[self::CONFIG_DISABLE_OB]) {
-            // From https://stackoverflow.com/a/49190570/4721245
-            // disable output buffering
-            while (ob_get_level()) {
-                ob_end_flush();
-            }
-
-            // turn implicit flush
-            ob_implicit_flush(1);
         }
 
         // Update the config to our internals
