@@ -46,11 +46,13 @@ Unit Test:
 MySQL Integration Test:
   image: php:8-alpine
   stage: test
+  coverage: /^\s*Lines:\s*\d+.\d+\%/
   needs:
     - "Unit Test"
   services:
     - mysql:latest
   variables:
+    XDEBUG_MODE: coverage
     MYSQL_ROOT_PASSWORD: "baccano"
     MYSQL_DATABASE: "f3ilgar"
     db: "sqllike"
@@ -66,20 +68,25 @@ MySQL Integration Test:
     - docker-php-ext-install pdo pdo_mysql
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
-    - composer run test -- --log-junit report.xml
+    - composer run test -- --log-junit report.xml --coverage-text --coverage-cobertura=coverage.cobertura.xml --colors=never
   artifacts:
     when: always
     reports:
       junit: report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.cobertura.xml
 
 Postgre Integration Test:
   image: php:8-alpine
   stage: test
+  coverage: /^\s*Lines:\s*\d+.\d+\%/
   needs:
     - "Unit Test"
   services:
     - postgres:latest
   variables:
+    XDEBUG_MODE: coverage
     POSTGRES_PASSWORD: "baccano"
     POSTGRES_DB: "f3ilgar"
     db: "sqllike"
@@ -95,20 +102,25 @@ Postgre Integration Test:
     - apk update && apk add libpq-dev && docker-php-ext-install pdo pdo_pgsql
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
-    - composer run test -- --log-junit report.xml
+    - composer run test -- --log-junit report.xml  --coverage-text --coverage-cobertura=coverage.cobertura.xml --colors=never
   artifacts:
     when: always
     reports:
       junit: report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.cobertura.xml
 
 Mongo Integration Test:
   image: php:8-alpine
   stage: test
+  coverage: /^\s*Lines:\s*\d+.\d+\%/
   needs:
     - "Unit Test"
   services:
     - mongo:latest
   variables:
+    XDEBUG_MODE: coverage
     MONGO_INITDB_ROOT_USERNAME: "root"
     MONGO_INITDB_ROOT_PASSWORD: "baccano"
     MONGO_INITDB_DATABASE: "f3ilgar"
@@ -128,11 +140,14 @@ Mongo Integration Test:
   script:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - composer require mongodb/mongodb --no-ansi --no-interaction --no-progress
-    - composer run test -- --log-junit report.xml
+    - composer run test -- --log-junit report.xml  --coverage-text --coverage-cobertura=coverage.cobertura.xml --colors=never
   artifacts:
     when: always
     reports:
       junit: report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.cobertura.xml
 
 Publisher (Tag):
   stage: deploy
