@@ -3,5 +3,14 @@
     <description>F3 Ilgar's code style</description>
     <config name="installed_paths" value="vendor/chez14/phpcs/src/CHEZ14Standards"/>
     <rule ref="CHEZ14Standards"></rule>
-    <exclude-pattern type="relative">^/vendor/*</exclude-pattern>
+    <exclude-pattern type="relative">/vendor/*</exclude-pattern>
+    <rule ref="PEAR.Commenting.FunctionComment.MissingReturn">
+        <exclude-pattern type="relative">/test/*</exclude-pattern>
+    </rule>
+    <rule ref="PEAR.Commenting.FunctionComment.Missing">
+        <exclude-pattern type="relative">/test/*</exclude-pattern>
+    </rule>
+    <rule ref="PEAR.Commenting.FunctionComment.MissingParamTag">
+        <exclude-pattern type="relative">/test/*</exclude-pattern>
+    </rule>
 </ruleset>

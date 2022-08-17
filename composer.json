@@ -51,7 +51,7 @@
         "vlucas/phpdotenv": "^5.4"
     },
     "scripts": {
-        "style": "phpcs src/",
+        "style": "phpcs src/ test/",
         "style:format": "phpcbf src/ test/",
         "test": "phpunit --testdox"
     }
