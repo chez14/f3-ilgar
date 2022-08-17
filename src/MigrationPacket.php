@@ -30,7 +30,7 @@ abstract class MigrationPacket extends Migration
      */
     public function up(): void
     {
-        $this->logger->warn(
+        $this->logger->warning(
             "This style of migration will be deprecated in future " .
                 "major release, please consult to documentation for more information."
         );
