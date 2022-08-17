@@ -68,7 +68,7 @@ abstract class Migration implements MigrationInterface
             $logger->debug(sprintf("From %s#%d", $e->getFile(), $e->getLine()));
             $logger->debug(sprintf("Stacktrace: %s", $e->getTraceAsString()));
 
-            throw new RuntimeException("Migration has encountered an exception", 12, $e);
+            throw new RuntimeException("Migration has encountered an exception: " . $e->getMessage(), 12, $e);
         }
         return true;
     }
