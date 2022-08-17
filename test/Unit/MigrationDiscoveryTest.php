@@ -37,6 +37,7 @@ class MigrationDiscoveryTest extends TestCase
         $this->f3 = F3::instance();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/../.test-files/virtualfolder-a/");
         $this->f3->set('ILGAR.' . Runner::CONFIG_WEBLOG, false);
+        $this->f3->set('ILGAR.disable_ob', false);
 
         // Trigger the setup sequence
         \CHEZ14\Ilgar\Boot::now();

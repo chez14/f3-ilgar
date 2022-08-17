@@ -23,6 +23,7 @@ class SoftFailTest extends TestCase
         $this->f3 = \F3::instance();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/.test-files/packages-test-3/");
         $this->f3->set('ILGAR.show_log', false);
+        $this->f3->set('ILGAR.disable_ob', false);
         \CHEZ14\Ilgar\Boot::now();
     }
 
