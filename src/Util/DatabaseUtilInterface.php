@@ -21,9 +21,11 @@ interface DatabaseUtilInterface
     /**
      * Get All Migrations that have been ran and recorded in the DB.
      *
+     * @param int|null $batchNumber Number of batch we want to pick
+     *
      * @return array
      */
-    public function getMigrations(): array;
+    public function getMigrations(?int $batchNumber = null): array;
 
     /**
      * Unregister migration from DB.

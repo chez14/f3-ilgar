@@ -9,6 +9,12 @@ use PDOException;
 class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
 {
     protected $internalDB = null;
+
+    /**
+     * DB Cursor Mapper
+     *
+     * @var Mapper
+     */
     protected $cursor = null;
     protected $runner = null;
 
@@ -44,9 +50,17 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
      */
     public function getBatch(): array
     {
-        return $this->cursor->select("batch", null, [
+        $batches = $this->cursor->select("batch", null, [
             "group" => "batch"
         ]);
+
+        if (!$batches) {
+            return [];
+        }
+
+        return array_map(function ($batch) {
+            return $batch['batch'];
+        }, $batches);
     }
 
     /**
@@ -72,14 +86,29 @@ class DatabaseSQLish extends \Prefab implements DatabaseUtilInterface
     /**
      * Get All Migrations that have been ran and recorded in the DB.
      *
+     * @param int|null $batchNumber Number of batch we want to pick
+     *
      * @return array
      */
-    public function getMigrations(): array
+    public function getMigrations(?int $batchNumber = null): array
     {
-        $migrations = $this->cursor->select('name, version, batch, migrated_on', null, [
+        $query = null;
+
+        if ($batchNumber !== null) {
+            $query = ["batch = ?", $batchNumber];
+        }
+
+        $migrations = $this->cursor->select('name, version, batch, migrated_on', $query, [
             "order" => "version asc"
         ]);
-        return $migrations;
+
+        if (!$migrations) {
+            return [];
+        }
+
+        return array_map(function ($migration) {
+            return $migration->cast();
+        }, $migrations);
     }
 
     /**

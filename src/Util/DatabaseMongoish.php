@@ -8,6 +8,12 @@ use DB\Mongo\Mapper;
 class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
 {
     protected $internalDB = null;
+
+    /**
+     * DB Cursor Mapper
+     *
+     * @var Mapper
+     */
     protected $cursor = null;
     protected $runner = null;
 
@@ -26,9 +32,17 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
      */
     public function getBatch(): array
     {
-        return $this->cursor->select("batch", null, [
+        $batches = $this->cursor->select("batch", null, [
             "group" => "batch"
         ]);
+
+        if (!$batches) {
+            return [];
+        }
+
+        return array_map(function ($batch) {
+            return $batch['batch'];
+        }, $batches);
     }
 
     /**
@@ -54,14 +68,29 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     /**
      * Get All Migrations that have been ran and recorded in the DB.
      *
+     * @param int|null $batchNumber Number of batch we want to pick
+     *
      * @return array
      */
-    public function getMigrations(): array
+    public function getMigrations(?int $batchNumber = null): array
     {
-        $migrations = $this->cursor->find([], [
+        $query = [];
+
+        if ($batchNumber !== null) {
+            $query = ["batch = ?", $batchNumber];
+        }
+
+        $migrations = $this->cursor->find($query, [
             "order" => ["version" => -1]
         ]);
-        return $migrations;
+
+        if (!$migrations) {
+            return [];
+        }
+
+        return array_map(function ($migration) {
+            return $migration->cast();
+        }, $migrations);
     }
 
     /**
