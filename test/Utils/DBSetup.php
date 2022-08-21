@@ -15,10 +15,17 @@ class DBSetup
     {
         // check for DB.
         $db = null;
-        if (getenv('db') == "sqllike") {
-            $db = new \DB\SQL(getenv('db_dsn'), getenv('db_username') ?? "", getenv('db_password') ?? "");
-        } elseif (getenv('db') == "mongo") {
-            $db = new \DB\Mongo(getenv('db_dsn'), getenv('db_table'));
+        if (F3::instance()->get('ENV.db', getenv('db')) == "sqllike") {
+            $db = new \DB\SQL(
+                F3::instance()->get('ENV.db_dsn', getenv('db_dsn')),
+                F3::instance()->get('ENV.db_username', getenv('db_username')) ?? "",
+                F3::instance()->get('ENV.db_password', getenv('db_password')) ?? ""
+            );
+        } elseif (F3::instance()->get('ENV.db', getenv('db')) == "mongo") {
+            $db = new \DB\Mongo(
+                F3::instance()->get('ENV.db_dsn', getenv('db_dsn')),
+                F3::instance()->get('ENV.db_table', getenv('db_table'))
+            );
         }
 
         if (!$db) {
