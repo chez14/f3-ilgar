@@ -3,27 +3,17 @@
 namespace CHEZ14\Ilgar\Test\Integration;
 
 use CHEZ14\Ilgar\Test\Utils\DBSetup;
-use PHPUnit\Framework\TestCase;
+use Tests\Integration\BaseTest;
 
 /**
  * @testdox Soft Fail Test: failure because of false code from the do_migrate method.
  */
-class SoftFailTest extends TestCase
+class SoftFailTest extends BaseTest
 {
-    protected $f3;
-
     protected function setUp(): void
     {
-        try {
-            DBSetup::setup();
-        } catch (\InvalidArgumentException $e) {
-            $this->markTestSkipped("Database is not set");
-        }
-
-        $this->f3 = \F3::instance();
+        parent::setUp();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/.test-files/packages-test-3/");
-        $this->f3->set('ILGAR.show_log', false);
-        $this->f3->set('ILGAR.disable_ob', false);
         \CHEZ14\Ilgar\Boot::now();
     }
 

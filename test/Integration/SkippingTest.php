@@ -3,27 +3,17 @@
 namespace CHEZ14\Ilgar\Test\Integration;
 
 use CHEZ14\Ilgar\Test\Utils\DBSetup;
-use PHPUnit\Framework\TestCase;
+use Tests\Integration\BaseTest;
 
 /**
  * @testdox is_migratable
  */
-class SkippingTest extends TestCase
+class SkippingTest extends BaseTest
 {
-    protected $f3;
-
     protected function setUp(): void
     {
-        try {
-            DBSetup::setup();
-        } catch (\InvalidArgumentException $e) {
-            $this->markTestSkipped("Database is not set");
-        }
-
-        $this->f3 = \F3::instance();
+        parent::setUp();
         $this->f3->set('ILGAR.path', dirname(__DIR__) . "/.test-files/packages-test-2/");
-        $this->f3->set('ILGAR.show_log', false);
-        $this->f3->set('ILGAR.disable_ob', false);
         \CHEZ14\Ilgar\Boot::now();
     }
 
