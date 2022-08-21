@@ -7,7 +7,6 @@ use F3;
 
 class DBSetup
 {
-
     public static function fixEnvironment()
     {
         $envA = getenv();
