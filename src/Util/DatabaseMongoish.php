@@ -33,7 +33,7 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     public function getBatch(): array
     {
         $batches = $this->cursor->select("batch", null, [
-            "group" => "batch"
+            'group' => ["batch"]
         ]);
 
         if (!$batches) {
@@ -53,7 +53,7 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
     public function getLatestBatch(): int
     {
         $batch = $this->cursor->select("batch", null, [
-            "\$group" => "batch",
+            'group' => ["batch"],
             "order" => ["batch" => -1],
             "limit" => 1
         ]);
@@ -77,7 +77,7 @@ class DatabaseMongoish extends \Prefab implements DatabaseUtilInterface
         $query = [];
 
         if ($batchNumber !== null) {
-            $query = ["batch = ?", $batchNumber];
+            $query = ["batch" => $batchNumber];
         }
 
         $migrations = $this->cursor->find($query, [
